@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<?php
+// Ejercicio 1
+
+	$nombre = "Nahiomy";
+   
+    echo "Ejercicio 1: <br>" . "Bienvenida " . $nombre . "<br>";
+?>
+
+
+<?php
+// Ejercicio 2
+
+	$nombre = "Ajax";
+    $edad = 22;
+    $ciudad = "Snezhnaya";
+    
+    echo "<br> Ejercicio 2:<br> $nombre tiene $edad años y vive en $ciudad . <br>";
+?>
+
+
+<?php
+// Ejercicio 3
+	
+    $a = 2;
+    $b = 2;
+    
+    echo "<br> Ejercicio 3:<br>";
+    echo "Suma de a y b: " . $a + $b;
+    echo "<br>Resta de a y b: " . $a - $b;
+    echo "<br>Multiplicación  de a y b: " . $a * $b;
+    echo "<br>División de a y b: " . $a / $b . "<br>";
+?>
+
+<?php
+// Ejercicio 4
+
+	$string = "texto";
+    $int= 1;
+    $float= 2.6;
+    $bool= true;
+    
+    echo "<br> Ejercicio 4:<br>";
+    echo gettype($string). "<br>";
+    echo gettype($int). "<br>";
+    echo gettype($float). "<br>";
+    echo gettype($bool). "<br>";
+?>
+
+
+
+
+<?php
+
+    echo "<br> Ejercicio 5:<br>";
+    $a = "8";
+    $b = 8;
+    var_dump($a == $b);
+    var_dump($a === $b);
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

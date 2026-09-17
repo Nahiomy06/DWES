@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<?php
+// Ejercicio 1	
+    $a = 5;
+    $b = 5;
+    
+    echo "<br> Ejercicio 1:<br>";
+    echo "Suma de a y b: " . $a + $b;
+    echo "<br>Resta de a y b: " . $a - $b;
+    echo "<br>Multiplicación  de a y b: " . $a * $b;
+    echo "<br>División de a y b: " . $a / $b . "<br>";
+?>
+
+<?php
+// Ejercicio 2	
+    $edad = 18;
+    $tieneCarnet= true;
+    
+     echo "<br> Ejercicio 2:<br>";
+    
+    if ($edad >=18 && $tieneCarnet){
+    	Echo "Esta persona puede conducir <br>";
+        
+    } else{
+    	Echo "Esta persona no puede conducir <br>";
+    }
+?>
+
+<?php
+// Ejercicio 3	
+    $nota1 = 4;
+    $nota2 = 4; 
+    $nota3 = 6; 
+    
+    $media = ($nota1 + $nota2 + $nota3) /3;
+    
+    
+    echo "<br> Ejercicio 3:<br>";
+
+    if ($media >= 5){
+    	echo "El alumno ha aprobado el curso.<br>";
+        
+    } else {
+    	echo "El alumno ha desaprobado el curso.<br>";
+        
+    };
+    
+    if ($nota1 || $nota2 || $nota3 < 4){
+    	echo "el alumno tiene un suspenso grave en una de las materias <br>";
+        
+    }else {
+    	echo "El alumno no tiene ningun suspenso grave en las tres materias <br>";
+    };
+    
+
+?>
+
+</body>
+</html>
