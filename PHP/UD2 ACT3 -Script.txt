@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<?php
+// Ejercicio 1.1
+
+	echo "Ejercicio 1.1: <br>";
+    
+	$numero = 3;
+   
+    if ($numero % 2 == 0){
+    	echo "<br> $numero es par <br>";
+    } else {
+    	echo "<br> $numero es impar <br>";
+    }
+ 
+?>
+
+
+<?php
+// Ejercicio 1.2
+
+	echo "<br> Ejercicio 1.2: <br>";
+   
+    $edad = 16;
+	
+    if ($edad >= 18){
+    	echo "<br> Esta persona es mayor de edad  <br>";
+    } else {
+    	echo "<br> Esta persona es menor de edad <br>";
+    }
+	
+?>
+
+
+<?php
+// Ejercicio 2
+
+	echo "<br> Ejercicio 2: <br>";   
+    
+    $dia = 8;
+    
+    switch($dia){
+    
+    	case 1:
+        	echo "<br> Lunes <br>";
+            break;
+        case 2:
+        	echo "<br> Martes <br>";
+            break;
+        case 3: 
+        	echo "<br> Miercoles <br>";
+            break;
+        case 4:
+        	echo "<br> Jueves <br>";
+            break;
+        case 5:
+        	echo "<br> Viernes <br>";
+            break;
+        case 6: 
+        	echo "<br> Sabado <br>";
+            break;
+        case 7:
+        	echo "<br> Domingo <br>";
+            break;
+        default:
+        	echo "<br> Algo fue mal, tratemos de quedarnos en el rago de 1 al 7 <br>";
+            break;
+    }
+    
+    
+?>
+<?php
+// Ejercicio 3
+
+	echo "<br> Ejercicio 3: <br>";   
+    
+    $nota = 9;
+
+
+	$text = match($nota){
+    	1,2,3,4 => "Insuficiente<br>",
+        5 => "Suficiente<br>",
+        6 => "Bien<br>",
+        7,8 => "Notable<br>",
+        9,10 => "Sobresaliente<br>",
+		default => "Nota invalida<br>",  
+    };
+    
+    echo $text; 
+    
+?>
+
+
+<?php
+
+	echo "<br> Ejercicio 4: <br>";   
+    
+    $usuarioCorrecto = "admin";
+    $contraCorrecta = "1234";
+    $activo = true;
+    
+    $usuarioIngresado = "admin";
+    $contraIngresada = "1234";
+    
+    if ($usuarioCorrecto !== $usuarioIngresado){ 
+    	
+        echo "<br> Usuario incorecto";
+        
+        } elseif ($contraCorrecta !== $contraIngresada){
+        
+        	echo "<br> Contraseña incorrecta";
+            
+            } elseif ($activo !== true){
+            
+            	echo "<br> Cuenta incactiva";
+                
+                } else {
+                	echo "<br> Ingresado a la cuenta correctamente";
+                	}
+
+?> 
+
+</body>
+</html>

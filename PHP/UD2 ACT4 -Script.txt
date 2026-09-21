@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<?php
+// Ejercicio 1
+
+	echo "Ejercicio 1: <br>";
+    
+    $numero = 5;
+    
+    for ($i = 1; $i <= 10; $i++){
+    	$resultado = $numero * $i;
+        
+        echo "$numero x $i es igual a $resultado<br>";
+    }
+    
+    
+ 
+?>
+
+<?php
+// Ejercicio 2
+
+	echo "<br> Ejercicio 2: <br>";
+    
+    
+    $i = 1;
+    $suma = 0;
+    
+    while ($i <=50){
+    	if ($i % 2 == 0){
+        	$suma = $suma + $i;
+            
+        }
+        $i++;
+        
+    }
+    
+    echo "la suma de todos los números pares entre 1 y 50 es de $suma <br>";
+    
+ 
+?>
+
+<?php
+// Ejercicio 3
+
+	echo "<br> Ejercicio 3: <br>";
+    
+    $contador = 10;
+    
+    do {
+    	echo "$contador <br>";
+        $contador --;
+    } while ($contador >= 0);
+    
+ 
+?>
+
+<?php
+// Ejercicio 4.1
+
+	echo "<br> Ejercicio 4.1: <br>";
+    
+    $precios =[12.5, 8, 25.3, 4.99, 15];
+    $total = 0;
+    
+    foreach ($precios as $precios){
+    	$precioiva = $precios * 1.21;
+        $total = $total + $precioiva;
+    }
+    
+    echo "El precio total con IVA es: " . $total . " € <br>";
+    
+ 
+?>
+
+<?php
+// Ejercicio 4.2
+
+	echo "<br> Ejercicio 4.2: <br>";
+    
+    echo "<table border = 1>";
+    
+    for ($i = 1; $i <= 5; $i++){
+    	echo "<tr>";
+        for ($j =1; $j <= 5; $j++){
+        	echo "<td>" . $i . " x " . $j . " = " . ($i * $j) . "</td>";
+        }
+        echo "</tr>";
+    }
+        echo "</table> <br>";
+
+ 
+?>
+
+
+</body>
+</html>
