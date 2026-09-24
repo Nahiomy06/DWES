@@ -16,6 +16,10 @@
         $i++;
         
     }
+
+    $listaproductos[] = "Uva";
+    
+    array_push($listaproductos, "Fresa")
 ?>
 
 <?php
@@ -57,6 +61,40 @@
     
     echo "El precio total es de $total € <br>";
     
+?>
+
+<?php
+// Ejercicio 4
+
+	echo "<br> Ejercicio 4: <br>";
+    
+    $productos =[
+    	["nombre" => "Cebolla",
+        	"precio"=> 1.4,
+            "categoria" => "Verdura"],
+            
+        ["nombre" => "Ajo",
+        	"precio"=> 3.3,
+            "categoria" => "Verdura"], 
+            
+        ["nombre" => "Banana",
+        	"precio"=> 4.2,
+            "categoria" => "Fruta"], 
+            
+        ["nombre" => "Sandia",
+        	"precio"=> 7.1,
+            "categoria" => "Fruta"]
+    ];
+    
+    $categoriaBusqueda = "Fruta";
+    $precioTot = 0;
+    
+    foreach($productos as $productos){
+    
+    	if ($productos["categoria"] == $categoriaBusqueda){
+        	echo "<br> $categoriaBusqueda : <br>" . $productos["nombre"] . " - " . $productos["precio"] . " €<br>";
+        }
+    }
 ?>
 
 

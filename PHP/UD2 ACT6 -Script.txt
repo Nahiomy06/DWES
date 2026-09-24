@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<?php
+// Ejercicio 1
+
+	echo "Ejercicio 1: <br>";
+    
+    function saludar($nombre){
+    
+    	return "<br> Hola, $nombre! <br>";
+    }
+    
+    echo saludar("Ana")
+?>
+
+<?php
+// Ejercicio 2
+
+	echo "<br> Ejercicio 2: <br>";
+    
+    function sumar($a, $b){
+    
+    	return "<br> La suma de $a y $b es " . $a + $b;
+    }
+    
+    echo sumar(1, 2) . "<br>";
+?>
+
+
+<?php
+// Ejercicio 3
+
+	echo "<br> Ejercicio 3: <br>";
+    
+    function calcularPrecioFinal($precio, $iva = 21){
+    
+    	return $precio + ($precio * $iva / 100);
+    }
+    
+    echo "<br> El precio final con el IVA por defecto es de " . calcularPrecioFinal(100) . "<br>";
+    
+    echo "<br> El precio final con el IVA cambiado es de " . calcularPrecioFinal(100, 10) . "<br>";
+
+?>
+
+<?php
+// Ejercicio 4
+
+	echo "<br> Ejercicio 4: <br>";
+    
+    function esMayorDeEdad($edad){
+    
+    	if ($edad >= 18){
+        	$esMayor = "true";
+        } else{
+        	$esMayor = "false";
+        }
+    
+    	return $esMayor;
+    }
+    
+    echo "<br> Es esta persona mayor de edad? <br>" . esMayorDeEdad(19) . "<br>";
+    
+?>
+
+<?php
+// Ejercicio 5
+
+	echo "<br> Ejercicio 5: <br>";
+    
+    function factorial($n){
+    
+    	if ($n == 0 || $n == 1){
+        	return 1;
+        }
+        
+    	return $n * factorial($n - 1);
+    }
+    
+    echo "<br>El factorial de 5 es " . factorial(5) . "<br>";
+    
+?>
+
+
+<?php
+// Ejercicio 6
+
+	echo "<br> Ejercicio 6: <br>";
+    
+    $contador = 0;
+    
+    function incrementar(){
+    	global $contador;
+        $contador++;
+        
+        //tiene que ser una variable global, 
+        //ya que sino el contador no se manteneria con el valor correcto
+        
+        echo "<br> Contador: " . $contador . "<br>";
+    }
+    
+   incrementar();
+   incrementar();
+   incrementar();
+    
+?>
+
+</body>
+</html>

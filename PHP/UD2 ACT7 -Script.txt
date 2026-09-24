@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<!-- Ejercicio 1 -->
+
+	<form method="post" action="">
+ 		Nombre: <input type="text" name="nombre">
+ 		<input type="submit" value="Enviar">
+	</form>
+
+<?php
+
+    if (isset($_POST["nombre"])){
+    	echo "Bienvenido/a " . $_POST["nombre"] . "!";
+    }
+    
+?>
+
+<!-- Ejercicio 2 --> 
+	<br> 
+	<br> 
+	<form method="get" action=""> 
+    	Nombre: <input type="text" name="nombre"> <br> 
+        Edad: <input type="text" name="edad"> <br> 
+        Ciudad: <input type="text" name="ciudad"> <br> 
+        
+        <input type="submit" value="Enviar"> 
+        </form> 
+        
+<?php 
+	if (isset($_GET["nombre"]) && isset($_GET["edad"]) && isset($_GET["ciudad"])){ 
+    	echo "Nombre: " . $_GET["nombre"] . "<br>"; 
+        echo "Edad: " . $_GET["nombre"] . "<br>"; 
+        echo "Ciudad: " . $_GET["nombre"] . "<br>"; } 
+?>
+
+<!-- Ejercicio 2 con estilos -->
+    <br>
+    <br>
+
+	<form method="get" action="">
+ 		<div> 
+        	<label for="nombre">Nombre:</label> <input type="text" id="nombre" name="nombre"> 
+        </div> 
+        <div> 		
+        	<label for="edad">Edad:</label> <input type="text" id="edad" name="edad"> 
+        </div> 
+        <div> 
+        	<label for="ciudad">Ciudad:</label> <input type="text" id="ciudad" name="ciudad"> 
+        </div> 
+        
+        <input type="submit" value="Enviar"> 
+        
+        </form> 
+        
+        <style> 
+        
+        form div { 
+        	display: flex; 
+            margin-bottom: 10px; 
+        } 
+        label { 
+        	width: 70px; 
+        } 
+        
+        </style>
+    
+
+<?php
+
+    if (isset($_GET["nombre"]) && isset($_GET["edad"]) && isset($_GET["ciudad"])){
+    	echo "Nombre: " . $_GET["nombre"] . "<br>";
+        echo "Edad: " . $_GET["edad"] . "<br>";
+    	echo "Ciudad: " . $_GET["ciudad"] . "<br>";
+    }
+    
+?>
+
+
+<!-- Ejercicio 3 -->
+
+	<form method="post" action="">
+ 		Nombre: <input type="text" name="nombre">
+ 		Email: <input type="text" name="email">
+ 		Mensaje: <textarea name="mensaje"></textarea>
+        
+ 		<input type="submit" value="Enviar">
+	</form>
+
+<?php
+
+    if (isset($_GET["nombre"]) && isset($_GET["email"]) && isset($_GET["mensaje"])){
+    	echo "Nombre: " . $_GET["nombre"] . "<br>";
+        echo "Email: " . $_GET["email"] . "<br>";
+    	echo "Mensaje: " . $_GET["mensaje"] . "<br>";
+    }
+    
+?>
+
+
+</body>
+</html>
