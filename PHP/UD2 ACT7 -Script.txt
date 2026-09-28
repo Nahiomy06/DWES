@@ -15,6 +15,9 @@
     	echo "Bienvenido/a " . $_POST["nombre"] . "!";
     }
     
+    echo "<br><br><br>"
+
+    
 ?>
 
 <!-- Ejercicio 2 --> 
@@ -33,6 +36,8 @@
     	echo "Nombre: " . $_GET["nombre"] . "<br>"; 
         echo "Edad: " . $_GET["nombre"] . "<br>"; 
         echo "Ciudad: " . $_GET["nombre"] . "<br>"; } 
+        echo "<br><br>"
+
 ?>
 
 <!-- Ejercicio 2 con estilos -->
@@ -51,39 +56,45 @@
         </div> 
         
         <input type="submit" value="Enviar"> 
+	</form> 
         
-        </form> 
+	<style> 
         
-        <style> 
-        
-        form div { 
-        	display: flex; 
+		form div { 
+			display: flex; 
             margin-bottom: 10px; 
-        } 
+            } 
         label { 
         	width: 70px; 
-        } 
+            } 
         
-        </style>
+	</style>
     
 
 <?php
 
     if (isset($_GET["nombre"]) && isset($_GET["edad"]) && isset($_GET["ciudad"])){
+    	echo "Informacion recibida <br>";
     	echo "Nombre: " . $_GET["nombre"] . "<br>";
         echo "Edad: " . $_GET["edad"] . "<br>";
     	echo "Ciudad: " . $_GET["ciudad"] . "<br>";
     }
-    
+    echo "<br><br><br>"
 ?>
 
 
 <!-- Ejercicio 3 -->
 
-	<form method="post" action="">
- 		Nombre: <input type="text" name="nombre">
- 		Email: <input type="text" name="email">
- 		Mensaje: <textarea name="mensaje"></textarea>
+	<form method="get" action="">
+ 		<div> 
+        	<label for="nombre">Nombre:</label><input type="text" name="nombre"> 
+        </div> 
+		<div> 
+ 			<label for="nombre">Email: </label><input type="text" name="email">
+ 		</div> 
+        <div> 
+ 			<label for="nombre">Mensaje: </label><textarea name="mensaje"></textarea>
+ 		</div> 
         
  		<input type="submit" value="Enviar">
 	</form>
@@ -91,10 +102,23 @@
 <?php
 
     if (isset($_GET["nombre"]) && isset($_GET["email"]) && isset($_GET["mensaje"])){
-    	echo "Nombre: " . $_GET["nombre"] . "<br>";
-        echo "Email: " . $_GET["email"] . "<br>";
-    	echo "Mensaje: " . $_GET["mensaje"] . "<br>";
-    }
+		if (empty($_GET["nombre"])){
+          echo "Falta ingresar un nombre <br>";
+          };
+          
+		if (empty($_GET["email"])){
+          echo "Falta ingresar un email <br>";
+          };
+		if (empty($_GET["mensaje"])){
+          echo "Falta ingresar un mensaje <br>";
+          };
+
+		if (!empty($_GET["nombre"]) && !empty($_GET["email"]) && !empty($_GET["mensaje"])){
+			echo "Nombre: " . $_GET["nombre"] . "<br>";
+			echo "Email: " . $_GET["email"] . "<br>";
+			echo "Mensaje: " . $_GET["mensaje"] . "<br>";
+            };
+      }
     
 ?>
 

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<style> 
+		form div { 
+			display: flex; 
+            margin-bottom: 10px; 
+            } 
+        label { 
+        	width: 70px; 
+            } 
+	</style>
+    
+<!-- Ejercicio 1 -->
+<?php
+
+	$datos = [
+    	"nombre" => "",
+        "email" => "ana@mail.com"
+    ];
+    
+    foreach ($datos as $campo => $valor){
+    	if (empty($valor)){
+        	echo "el campo " . $campo . " esta sin rellenar <br><br>";
+        }
+    }
+	
+?>
+  
+<!-- Ejercicio 2 -->
+
+	<form method="get" action="">
+ 		<div> 
+        	<label for="email">Email:</label> <input type="text" id="email" name="email"> 
+        </div> 
+        <input type="submit" value="Enviar"> 
+	</form>
+
+<?php
+
+    if (isset($_GET["email"])) {
+      if (!filter_input(INPUT_GET, "email", FILTER_VALIDATE_EMAIL)){
+          echo "El email no es valido";
+      } else {
+          echo "El email es valido";
+      }
+    }
+	
+?>
+
+
+<!-- Ejercicio 3 -->
+
+	<form method="get" action="">
+ 		<div> 
+        	<label for="edad">Edad:</label> <input type="text" id="edad" name="edad"> 
+        </div> 
+        <input type="submit" value="Enviar"> 
+	</form>
+
+<?php
+
+    if (isset($_GET["edad"])) {
+      if (is_numeric($_GET["edad"])){
+      	$edad = $_GET["edad"];
+        
+        $edad = $edad + 5;
+      	
+        echo "En 5 años vas a tener: " . $edad;
+      } else{
+		echo "La edad introducida es invalida";
+    	}
+    }; 
+	
+?>
+
+
+
+<!-- Ejercicio 4 -->
+    <br>
+    <br>
+
+	<form method="post" action="">
+ 		<div> 
+        	<label for="nombre">Nombre:</label> <input type="text" id="nombre" name="nombre"> 
+        </div> 
+        <div> 		
+        	<label for="comentario">Comentario: </label> <textarea type="text" id="comentario" name="comentario"> </textarea>
+        </div> 
+        
+        <input type="submit" value="Enviar"> 
+	</form> 
+        
+<?php
+    if (isset($_POST["nombre"]) && isset($_POST["comentario"])) {
+		$nombre = $_POST["nombre"]; 
+        $comentario = $_POST["comentario"];
+        
+        /* * Es importante limpiar los datos introducidos por el usuario * antes de mostrarlos para evitar que se ejecute código HTML o JavaScript. */
+        
+        $comentario = filter_var($comentario, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        
+        echo "Nombre: " . $nombre . "<br>";
+        echo "Comentario: " . $comentario . "<br>";
+    }
+    
+	
+	
+?>
+    
+
+</body>
+</html>
+
