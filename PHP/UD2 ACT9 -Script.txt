@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<!-- Ejercicio 1 -->
+<?php
+
+	
+    $texto = "Holaa";
+    
+    
+    echo "Texto: " . $texto . "<br>";
+    
+	echo "Largo: " . strlen($texto) . "<br>";
+    
+	echo "Mayuscula: " . strtoupper($texto) . "<br>";
+    
+	echo "Minuscula: " . strtolower($texto) . "<br>";
+?> 
+
+
+
+<!-- Ejercicio 2 -->
+<?php
+
+	
+    $frase = "  Hola, como estas?  ";
+    
+    $frase_nueva = str_replace("estas", "andas", $frase);
+    
+    echo "Original: " . $frase . "<br>";
+    
+    echo "Modifica: " . $frase_nueva . "<br>";
+    
+    echo "Los primero 10 caracteres: " . substr($frase, 0, 10) . "<br>";
+    
+    echo "Trim: " . trim($frase) . "<br>";
+?> 
+
+
+<!-- Ejercicio 3 -->
+<?php
+
+	$frase = "Hoy es un buen dia para programar en PHP";  
+    
+    $palabras = explode(" ", $frase);
+    
+    print_r($palabras);
+?>
+</body>
+</html>
