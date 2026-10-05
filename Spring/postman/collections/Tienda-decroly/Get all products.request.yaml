@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{baseUrl}}{{prodouctUrl}}"
+method: GET
+order: 1791220424121

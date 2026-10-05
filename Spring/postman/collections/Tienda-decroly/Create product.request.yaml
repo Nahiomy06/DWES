@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}{{prodouctUrl}}"
+method: POST
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Uva",
+        "precio": 0.51,
+        "stock": 28
+    }
+order: 2571884360792096
