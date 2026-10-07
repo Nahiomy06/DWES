@@ -1,4 +1,4 @@
 $kind: http-request
-url: ""
-method: GET
+url: "{{baseUrl}}{{prodouctUrl}}/2"
+method: DELETE
 order: 3799018615062627

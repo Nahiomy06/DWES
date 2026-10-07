@@ -1,4 +1,15 @@
 $kind: http-request
-url: ""
-method: GET
+url: "{{baseUrl}}{{prodouctUrl}}/2"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"nombre\": \"Pera nueva\",\r
+
+    \    \"precio\": 4.5,\r
+
+    \    \"stock\": 54\r
+
+    }"
 order: 3429163540043617
