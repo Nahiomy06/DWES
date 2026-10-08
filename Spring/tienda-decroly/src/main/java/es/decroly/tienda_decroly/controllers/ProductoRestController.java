@@ -1,7 +1,10 @@
 package es.decroly.tienda_decroly.controllers;
 
 import es.decroly.tienda_decroly.domain.Producto;
+import es.decroly.tienda_decroly.exceptions.BadRequestException;
+import es.decroly.tienda_decroly.exceptions.NotFoundException;
 import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,14 +39,16 @@ public class ProductoRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> getProductosId(@PathVariable long id) {
+    public Producto getProductosId(@PathVariable long id) {
+        Producto producto = buscarPorId(id);
+        return producto;
 
-        for (Producto p : productos) {
-            if (Objects.equals(p.getId(), id)) {
-                return ResponseEntity.ok(p);
-            }
-        }
-        return  ResponseEntity.notFound().build(); //Error 4040
+//        for (Producto p : productos) {
+//            if (Objects.equals(p.getId(), id)) {
+//                return ResponseEntity.ok(p);
+//            }
+//        }
+//        throw  new NotFoundException("No existe el producto con la id " + id);
 
 //        return productos.stream()
 //                .filter(p -> p.getId() == id)
@@ -52,40 +57,81 @@ public class ProductoRestController {
     }
 
     @PostMapping()
-    public ResponseEntity<Producto> createProducto(@RequestBody Producto producto) {
+    public Producto createProducto(@RequestBody Producto producto) {
+
+        ValidarProducto(producto.getNombre(), producto.getPrecio(), producto.getStock());
         producto.setId(secuencia.incrementAndGet());
         productos.add(producto);
-        String URI = String.format("/api/productos/%d", producto.getId());
-        return ResponseEntity.created(java.net.URI.create(URI)).body(producto);
+        return producto;
+
+
+//        producto.setId(secuencia.incrementAndGet());
+//        productos.add(producto);
+//        String URI = String.format("/api/productos/%d", producto.getId());
+//        return producto;
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> updateProducto(@PathVariable long id, @RequestBody Producto producto) {
+    public Producto updateProducto(@PathVariable long id, @RequestBody Producto producto) {
 
-        for (int i = 0; i < productos.size(); i++) {
-            if (Objects.equals(productos.get(i).getId(), id)) {
-                producto.setId(id);
-                productos.set(i, producto);
-                return ResponseEntity.ok(producto);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        }
-
-        return ResponseEntity.ok(producto);
+        Producto productoActual = buscarPorId(id);
+        ValidarProducto(producto.getNombre(), producto.getPrecio(), producto.getStock());
+        producto.setId(productoActual.getId());
+        int indice = productos.indexOf(productoActual);
+        productos.set(indice, producto);
+        return productoActual;
+//        for (int i = 0; i < productos.size(); i++) {
+//            Producto p = productos.get(i);
+//            if (Objects.equals(p.getId(), id)) {
+//                producto.setId(id);
+//                productos.set(i, producto);
+//                return ResponseEntity.ok(producto);
+//            }
+//        }
+//        throw  new NotFoundException("No existe el producto con la id " + id);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProducto(@PathVariable long id) {
-        for (int i = 0; i < productos.size(); i++) {
-            if (Objects.equals(productos.get(i).getId(), id)) {
-                productos.remove(i);
-                return ResponseEntity.noContent().build(); //204
-            }
-        }
-        return ResponseEntity.notFound().build(); //404
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProducto(@PathVariable long id) {
+
+        Producto productoActual = buscarPorId(id);
+        productos.remove(productoActual);
+
+//        for (int i = 0; i < productos.size(); i++) {
+//            if (Objects.equals(productos.get(i).getId(), id)) {
+//                productos.remove(i);
+//                return ResponseEntity.noContent().build(); //204
+//            }
+//        }
+//        throw  new NotFoundException("No existe el producto con la id " + id);
     }
 
 
-}
+    private Producto buscarPorId(long id) {
+        for (Producto p : productos) {
+            if (Objects.equals(p.getId(), id)) {
+                return p;
+            }
+        }
+        throw  new NotFoundException("No existe el producto con la id " + id);
+    }
+
+    private void ValidarProducto(String nombre, double precio, int stock) {
+
+        if (nombre == null || nombre.isBlank()) {
+            throw new BadRequestException("El nombre no puede estar vacio");
+        }
+
+        if (precio <= 0) {
+            throw new BadRequestException("El precio no puede ser negativo");
+        }
+
+        if (stock < 0) {
+            throw new BadRequestException("El stock no puede ser negativo");
+        }
+    }
+
+
+    }
