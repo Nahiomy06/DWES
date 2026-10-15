@@ -1,90 +1,23 @@
 package es.decroly.tienda_decroly.services;
 
+
 import es.decroly.tienda_decroly.domain.Producto;
-import es.decroly.tienda_decroly.exceptions.BadRequestException;
-import es.decroly.tienda_decroly.exceptions.NotFoundException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+
 
 @Service
-public class ProductoServiceMemoria implements ProductoService{
-    private final AtomicLong secuencia = new AtomicLong();
-    private final List<Producto> productos = new ArrayList<>();
+@ConditionalOnProperty(name = "tienda.productos.origen", havingValue = "memoria", matchIfMissing = true)
+public class ProductoServiceMemoria extends ProductoServiceBase{
 
     public ProductoServiceMemoria() {
-        anadir("Manzana", 1.5, 25);
-        anadir("Pera", 1.5, 25);
-        anadir("Banana", 1.5, 25);
-    }
-
-    private void anadir(String nombre, double precio, int stock){
-        long id = secuencia.incrementAndGet();
-        productos.add(new Producto(id, nombre, precio, stock));
+        super(List.of(new Producto(1L, "Manzana", 1.4, 15),
+                new Producto(2L, "Pera", 1.9, 40),
+                new Producto(3L, "Sandia", 3.00, 8)));
 
     }
 
-    @Override
-    public List<Producto> getProductos() {
-        return new ArrayList<>(productos);
-    }
-
-    @Override
-    public Producto getProductosId(Long id) {
-        Producto producto = buscarPorId(id);
-        return producto;
-    }
-
-    @Override
-    public Producto createProducto(Producto producto) {
-        ValidarProducto(producto.getNombre(), producto.getPrecio(), producto.getStock());
-        producto.setId(secuencia.incrementAndGet());
-        productos.add(producto);
-        return producto;
-    }
-
-    @Override
-    public Producto updateProducto(Long id, Producto producto) {
-        Producto productoActual = buscarPorId(id);
-        ValidarProducto(producto.getNombre(), producto.getPrecio(), producto.getStock());
-        producto.setId(productoActual.getId());
-        int indice = productos.indexOf(productoActual);
-        productos.set(indice, producto);
-        return productoActual;
-    }
-
-    @Override
-    public void deleteProducto(Long id) {
-        Producto productoActual = buscarPorId(id);
-        productos.remove(productoActual);
-
-    }
-
-
-    private Producto buscarPorId(long id) {
-        for (Producto p : productos) {
-            if (Objects.equals(p.getId(), id)) {
-                return p;
-            }
-        }
-        throw  new NotFoundException("No existe el producto con la id " + id);
-    }
-    private void ValidarProducto(String nombre, double precio, int stock) {
-
-        if (nombre == null || nombre.isBlank()) {
-            throw new BadRequestException("El nombre no puede estar vacio");
-        }
-
-        if (precio <= 0) {
-            throw new BadRequestException("El precio no puede ser negativo");
-        }
-
-        if (stock < 0) {
-            throw new BadRequestException("El stock no puede ser negativo");
-        }
-    }
 
 }
