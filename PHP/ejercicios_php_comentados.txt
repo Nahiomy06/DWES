@@ -1,0 +1,78 @@
+EJERCICIO 1: strlen(), strtoupper() y strtolower()
+===================================================
+
+<?php
+// Guardamos una frase cualquiera en la variable $texto.
+$texto = "Hoy estoy aprendiendo PHP";
+
+// Mostramos la frase original.
+echo "Frase original: " . $texto . "<br>";
+
+// strlen() devuelve la cantidad de caracteres de la frase.
+echo "Longitud: " . strlen($texto) . "<br>";
+
+// strtoupper() convierte todas las letras a mayúsculas.
+echo "Mayúsculas: " . strtoupper($texto) . "<br>";
+
+// strtolower() convierte todas las letras a minúsculas.
+echo "Minúsculas: " . strtolower($texto) . "<br>";
+?>
+
+
+EJERCICIO 2: str_replace(), substr() y trim()
+=============================================
+
+<?php
+// Creamos una frase para trabajar con ella.
+$frase = "Hoy es un buen dia para programar";
+
+// str_replace() sustituye la palabra "buen" por "gran".
+$fraseNueva = str_replace("buen", "gran", $frase);
+
+// Mostramos la frase después de sustituir la palabra.
+echo "Frase modificada: " . $fraseNueva . "<br>";
+
+// substr() extrae 10 caracteres desde la posición 0.
+echo "Primeros 10 caracteres: " . substr($frase, 0, 10) . "<br>";
+
+// Creamos otra variable que tiene espacios al principio y al final.
+$texto = "   Hola, estoy aprendiendo PHP   ";
+
+// trim() elimina los espacios del principio y del final.
+$textoLimpio = trim($texto);
+
+// Mostramos el texto limpio.
+echo "Texto sin espacios al inicio y al final: " . $textoLimpio;
+?>
+
+
+EJERCICIO 3: explode(), count(), implode() y strpos()
+=====================================================
+
+<?php
+// Guardamos la frase indicada en el enunciado.
+$frase = "Hoy es un buen dia para programar en PHP";
+
+// explode() divide la frase en un array usando los espacios como separadores.
+$palabras = explode(" ", $frase);
+
+// count() devuelve cuántas palabras hay en el array.
+echo "Número de palabras: " . count($palabras) . "<br>";
+
+// implode() une las palabras del array usando guiones.
+$fraseConGuiones = implode("-", $palabras);
+echo "Frase con guiones: " . $fraseConGuiones . "<br>";
+
+// Indicamos la palabra que queremos buscar.
+$palabra = "PHP";
+
+// strpos() devuelve la posición de la palabra o false si no la encuentra.
+$resultado = strpos($frase, $palabra);
+
+// Usamos !== false para comprobar correctamente si se encontró la palabra.
+if ($resultado !== false) {
+    echo "La palabra PHP existe en la frase.";
+} else {
+    echo "La palabra PHP no existe en la frase.";
+}
+?>

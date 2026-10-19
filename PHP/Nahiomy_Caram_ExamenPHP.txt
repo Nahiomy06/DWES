@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<?php
+echo "<br>";
+
+
+$productos = [
+
+    ["nombre" => "Teclado",  "precio" => 25.50,  "stock" => 12],
+
+    ["nombre" => "Ratón",    "precio" => 15.00,  "stock" => 3],
+
+    ["nombre" => "Monitor",  "precio" => 120.00, "stock" => 7],
+
+    ["nombre" => "Webcam",   "precio" => 45.90,  "stock" => 0],
+
+];
+//1. Mostrar un listado de todos los productos con su nombre, precio y stock.
+	echo "Ejercicio 1: <br>";
+
+foreach ($productos as $productos){
+    	echo "- El producto " . $productos["nombre"] . " cuesta ". $productos["precio"] . "€ y en stock hay " 			. $productos["stock"] . "<br>";
+        $i++;
+    };
+    
+?>
+
+
+<?php
+echo "<br>";
+echo "<br>";
+	echo "Ejercicio 2: <br>";
+
+$productos = [
+
+    ["nombre" => "Teclado",  "precio" => 25.50,  "stock" => 12],
+
+    ["nombre" => "Ratón",    "precio" => 15.00,  "stock" => 3],
+
+    ["nombre" => "Monitor",  "precio" => 120.00, "stock" => 7],
+
+    ["nombre" => "Webcam",   "precio" => 45.90,  "stock" => 0],
+
+];
+
+//2. Calcular y mostrar el valor total del inventario (suma de precio × stock de todos los productos).
+$total = 0;
+$totalp = 0;
+
+foreach ($productos as $productos){
+	$totalp = $productos["stock"] * $productos["precio"];
+    $total = $total + $totalp;
+}
+
+echo "El precio total de los productos es de " . $total . "€";
+
+
+?>
+
+
+
+<?php
+echo "<br>";
+echo "<br>";
+echo "<br>";
+	echo "Ejercicio 3: <br>";
+
+$productos = [
+
+    ["nombre" => "Teclado",  "precio" => 25.50,  "stock" => 12],
+
+    ["nombre" => "Ratón",    "precio" => 15.00,  "stock" => 3],
+
+    ["nombre" => "Monitor",  "precio" => 120.00, "stock" => 7],
+
+    ["nombre" => "Webcam",   "precio" => 45.90,  "stock" => 0],
+
+];
+
+//3. Mostrar qué productos tienen stock bajo (menos de 5 unidades), distinguiendo el caso de stock igual a 0 como "agotado".
+
+foreach ($productos as $productos){
+	if ($productos["stock"] <= 5){
+    	echo $productos["nombre"] . " Tiene un stock menor a 5: " . $productos["stock"];
+    }
+}
+
+?>
+
+
+<?php
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "Ejercicio 4: <br>";
+
+$productos = [
+
+    ["nombre" => "Teclado",  "precio" => 25.50,  "stock" => 12],
+
+    ["nombre" => "Ratón",    "precio" => 15.00,  "stock" => 3],
+
+    ["nombre" => "Monitor",  "precio" => 120.00, "stock" => 7],
+
+    ["nombre" => "Webcam",   "precio" => 45.90,  "stock" => 0],
+
+];
+
+//4. Indicar cuál es el producto más caro y cuál tiene más stock.
+$productoMasCaro = ["nombre" => "","precio" => 0];
+$productoConStock = ["nombre" => "","stock" => 0];
+
+foreach ($productos as $productos){
+	if($productos["precio"] > $productoMasCaro["precio"]){
+    	
+    	$productoMasCaro["nombre"] = $productos["nombre"];
+    	$productoMasCaro["precio"] = $productos["precio"];
+    }
+    if($productos["stock"] > $productoConStock["stock"]){
+    	
+    	$productoConStock["nombre"] = $productos["nombre"];
+    	$productoConStock["stock"] = $productos["stock"];
+    }
+}
+
+Echo $productoMasCaro["nombre"] . "es el producto mas caro, costando: " . $productoMasCaro["precio"] . "€";
+
+Echo "<br>" . $productoConStock["nombre"] . "es el producto mas stock, tieniendo: " . $productoConStock["stock"];
+
+?>
+
+
+<?php
+echo "<br>";
+echo "<br>";
+echo "<br>";
+	echo "Ejercicio 5: <br>";
+
+$productos = [
+
+    ["nombre" => "Teclado",  "precio" => 25.50,  "stock" => 12],
+
+    ["nombre" => "Ratón",    "precio" => 15.00,  "stock" => 3],
+
+    ["nombre" => "Monitor",  "precio" => 120.00, "stock" => 7],
+
+    ["nombre" => "Webcam",   "precio" => 45.90,  "stock" => 0],
+
+];
+
+//5. Mostrar cuántos productos en total están agotados.
+$cont = 0;
+foreach ($productos as $productos){
+	if ($productos["stock"] == 0){
+    	echo $productos["nombre"] . " esta agotado";
+        $cont++;
+    }
+}
+echo "<br>";
+
+echo "Estan agotados " . $cont . " productos";
+
+?>
+
+</body>
+</html>
+
+

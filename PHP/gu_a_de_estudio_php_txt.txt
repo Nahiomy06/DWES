@@ -1,0 +1,377 @@
+========================================================================
+             GUÍA COMPLETA DE ESTUDIO: EXAMEN DE PHP (UD2)
+========================================================================
+
+------------------------------------------------------------------------
+1. SINTAXIS BÁSICA, VARIABLES Y TIPOS DE DATOS
+------------------------------------------------------------------------
+
+* APERTURA Y CIERRE: Las instrucciones de PHP se encierran entre <?php y ?>.
+
+* VARIABLES: Inician siempre con $. Son sensibles a mayúsculas y minúsculas 
+  ($nombre != $Nombre). Tienen tipado dinámico.
+
+* SALIDA DE DATOS: echo y print.
+  - Concatenación: Operador punto (.)
+  - Interpolación: En cadenas rodeadas por comillas dobles (" "), las 
+    variables se evalúan directamente. En comillas simples (' '), se tratan 
+    como texto literal.
+
+* INSPECCIÓN DE DATOS:
+  - gettype($var): Devuelve el tipo de dato como un string.
+  - var_dump($var): Muestra el tipo, tamaño y valor detallado de la variable.
+
+* TIPOS DE DATOS PRINCIPALES:
+  - string: Cadenas de texto ("Hola")
+  - integer / int: Números enteros (22)
+  - float / double: Números con decimales (2.6)
+  - boolean / bool: Valores de verdad (true o false)
+  - array: Colecciones de datos
+
+EJEMPLO PRÁCTICO:
+<?php
+// Declaración e interpolación
+$nombre = "Ajax";
+$edad = 22;
+$ciudad = "Snezhnaya";
+
+echo "$nombre tiene $edad años y vive en $ciudad.<br>";
+
+// Detección de tipos
+$string = "texto";
+$int = 1;
+$float = 2.6;
+$bool = true;
+
+echo gettype($string) . "<br>"; // Muestra: string
+echo gettype($float) . "<br>";  // Muestra: double/float
+?>
+
+⚠️ OJO EN EL EXAMEN:
+- Olvidar poner el punto de concatenación (.) o el signo $ en las variables.
+- No cerrar las sentencias con punto y coma (;).
+
+
+------------------------------------------------------------------------
+2. OPERADORES Y COMPARACIONES
+------------------------------------------------------------------------
+
+* OPERADORES ARITMÉTICOS:
+  Suma (+), Resta (-), Multiplicación (*), División (/), Módulo (%) -> resto de división.
+
+* COMPARACIONES E IGUALDAD:
+  - == (Igualdad débil): Compara solo el valor (convierte tipos).
+  - === (Igualdad estricta): Compara valor Y tipo de dato.
+  - != / !== Desigualdad débil y estricta.
+
+* OPERADORES LÓGICOS:
+  - && (AND): Devuelve true si AMBAS condiciones son verdaderas.
+  - || (OR): Devuelve true si AL MENOS UNA condición es verdadera.
+  - ! (NOT): Invierte el valor lógico.
+
+EJEMPLO PRÁCTICO:
+<?php
+// Comparación débil vs estricta
+$a = "8"; // String
+$b = 8;   // Integer
+
+var_dump($a == $b);  // true (mismo valor)
+var_dump($a === $b); // false (diferente tipo)
+
+// Evaluación de resto
+$numero = 3;
+if ($numero % 2 == 0) {
+    echo "Es par";
+} else {
+    echo "Es impar"; // Se ejecuta esta rama
+}
+?>
+
+⚠️ OJO EN EL EXAMEN:
+- Confundir = (asignación) con == o === (comparación). Escribir if ($a = 5) 
+  asignará 5 a $a y se evaluará como true.
+
+
+------------------------------------------------------------------------
+3. ESTRUCTURAS DE CONTROL CONDICIONALES
+------------------------------------------------------------------------
+
+1. IF / ELSEIF / ELSE:
+   Evalúa condiciones secuencialmente.
+
+<?php
+$usuarioCorrecto = "admin";
+$contraCorrecta = "1234";
+$activo = true;
+
+$usuarioIngresado = "admin";
+$contraIngresada = "1234";
+
+if ($usuarioCorrecto !== $usuarioIngresado) { 
+    echo "Usuario incorrecto";
+} elseif ($contraCorrecta !== $contraIngresada) {
+    echo "Contraseña incorrecta";
+} elseif ($activo !== true) {
+    echo "Cuenta inactiva";
+} else {
+    echo "Ingreso correcto";
+}
+?>
+
+2. SWITCH:
+   Comparación débil (==) entre una variable y múltiples casos (case). 
+   Requiere break para no continuar ejecutando los casos siguientes.
+
+<?php
+$dia = 3;
+
+switch($dia) {
+    case 1:
+        echo "Lunes";
+        break;
+    case 3:
+        echo "Miércoles";
+        break;
+    default:
+        echo "Día no válido";
+        break;
+}
+?>
+
+3. EXPRESSION MATCH (PHP 8+):
+   Alternativa moderna a switch:
+   - Comparación estricta (===).
+   - Devuelve un valor directamente (se asigna a variable).
+   - Soporta múltiples condiciones por brazo separadas por comas.
+
+<?php
+$nota = 9;
+
+$resultado = match($nota) {
+    1, 2, 3, 4 => "Insuficiente",
+    5          => "Suficiente",
+    6          => "Bien",
+    7, 8       => "Notable",
+    9, 10      => "Sobresaliente",
+    default    => "Nota inválida"
+};
+
+echo $resultado; // Muestra: Sobresaliente
+?>
+
+
+------------------------------------------------------------------------
+4. ESTRUCTURAS REPETITIVAS (BUCLES)
+------------------------------------------------------------------------
+
+1. BUCLE FOR: Para cuando conocemos el número de iteraciones.
+
+<?php
+$numero = 5;
+for ($i = 1; $i <= 10; $i++) {
+    echo "$numero x $i = " . ($numero * $i) . "<br>";
+}
+?>
+
+2. BUCLE WHILE: Evalúa la condición ANTES de ejecutar.
+
+<?php
+$i = 1;
+$suma = 0;
+while ($i <= 50) {
+    if ($i % 2 == 0) {
+        $suma += $i;
+    }
+    $i++;
+}
+?>
+
+3. BUCLE DO...WHILE: Ejecuta el bloque AL MENOS UNA VEZ antes de evaluar.
+
+<?php
+$contador = 10;
+do {
+    echo "$contador <br>";
+    $contador--;
+} while ($contador >= 0);
+?>
+
+4. BUCLE FOREACH: Especializado en iterar sobre arreglos/arrays.
+
+<?php
+$precios = [12.5, 8, 25.3, 4.99, 15];
+$total = 0;
+
+foreach ($precios as $precio) {
+    $precioIva = $precio * 1.21;
+    $total += $precioIva;
+}
+?>
+
+
+------------------------------------------------------------------------
+5. ARRAYS
+------------------------------------------------------------------------
+
+A. ARRAYS INDEXADOS (NUMÉRICOS):
+<?php
+$listaproductos = ["banana", "manzana", "pera"];
+
+// Añadir elementos
+$listaproductos[] = "Uva";              // Opción 1
+array_push($listaproductos, "Fresa");   // Opción 2
+?>
+
+B. ARRAYS ASOCIATIVOS (CLAVE => VALOR):
+<?php
+$producto = [
+    "nombre" => "Banana",
+    "precio" => 1.5,
+    "stock" => 21
+];
+
+echo $producto["nombre"]; // Acceso mediante clave
+?>
+
+C. ARRAYS MULTIDIMENSIONALES:
+<?php
+$productos = [
+    ["nombre" => "Cebolla", "precio" => 1.4, "categoria" => "Verdura"],
+    ["nombre" => "Banana",  "precio" => 4.2, "categoria" => "Fruta"]
+];
+
+// Recorrido y filtrado
+$categoriaBusqueda = "Fruta";
+foreach ($productos as $item) {
+    if ($item["categoria"] == $categoriaBusqueda) {
+        echo $item["nombre"] . " - " . $item["precio"] . " €<br>";
+    }
+}
+?>
+
+
+------------------------------------------------------------------------
+6. FUNCIONES Y ÁMBITO DE VARIABLES
+------------------------------------------------------------------------
+
+* SINTAXIS BÁSICA Y VALORES POR DEFECTO:
+<?php
+function calcularPrecioFinal($precio, $iva = 21) {
+    return $precio + ($precio * $iva / 100);
+}
+
+echo calcularPrecioFinal(100);     // Usa 21% por defecto (121)
+echo calcularPrecioFinal(100, 10); // Reemplaza IVA por 10% (110)
+?>
+
+* RECURSIVIDAD: Funciones que se llaman a sí mismas. Requieren caso base.
+<?php
+function factorial($n) {
+    if ($n == 0 || $n == 1) {
+        return 1; // Caso base
+    }
+    return $n * factorial($n - 1);
+}
+?>
+
+* ÁMBITO GLOBAL (global):
+<?php
+$contador = 0;
+
+function incrementar() {
+    global $contador; // Permite acceder a la variable externa
+    $contador++;
+    echo "Contador: " . $contador . "<br>";
+}
+?>
+
+
+------------------------------------------------------------------------
+7. FORMULARIOS, MÉTODOS GET/POST Y VALIDACIÓN
+------------------------------------------------------------------------
+
+DIFERENCIAS ENTRE GET Y POST:
+- GET: Envía los datos visibles en la URL (?nombre=Juan&edad=20). 
+  Acceso: $_GET["campo"]. Ideal para búsquedas.
+- POST: Envía datos de forma oculta en la petición HTTP. 
+  Acceso: $_POST["campo"]. Ideal para datos sensibles o formularios extensos.
+
+FUNCIONES DE COMPROBACIÓN Y SEGURIDAD:
+- isset($var): Comprueba si una variable está definida y no es null.
+- empty($var): Comprueba si una variable está vacía ("", 0, null, false, array()).
+- is_numeric($var): Comprueba si es un número.
+- filter_input() / filter_var():
+  - FILTER_VALIDATE_EMAIL: Valida correo.
+  - FILTER_SANITIZE_FULL_SPECIAL_CHARS: Limpia caracteres HTML para evitar ataques XSS.
+
+CASO TÍPICO DE EXAMEN: PROCESAMIENTO SEGURO DE FORMULARIO
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // 1. Verificar existencia
+    if (isset($_POST["email"]) && isset($_POST["comentario"])) {
+        
+        // 2. Limpiar y sanitizar
+        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+        $comentario = filter_var($_POST["comentario"], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        
+        // 3. Validar contenido
+        if (!$email) {
+            echo "El email introducido no es válido.<br>";
+        } elseif (empty(trim($_POST["comentario"]))) {
+            echo "El comentario no puede estar vacío.<br>";
+        } else {
+            echo "Email: $email <br>";
+            echo "Comentario: $comentario <br>";
+        }
+    }
+}
+?>
+
+
+------------------------------------------------------------------------
+8. FUNCIONES DE CADENAS DE TEXTO
+------------------------------------------------------------------------
+
+- strlen($str)                     : Devuelve la longitud de la cadena.
+- strtoupper($str)                 : Convierte a mayúsculas.
+- strtolower($str)                 : Convierte a minúsculas.
+- trim($str)                       : Elimina espacios al inicio y final.
+- str_replace($buscar, $rempl, $str): Reemplaza texto.
+- substr($str, $inicio, $longitud) : Extrae una subcadena.
+- explode($delimitador, $str)      : Divide un string en un array.
+- implode($delimitador, $array)    : Une los elementos de un array en string.
+- count($array)                    : Cuenta elementos de un array.
+- strpos($str, $busqueda)          : Encuentra posición de subcadena.
+
+EJEMPLO COMPLETO DE CADENAS:
+<?php
+$frase = "Hoy es un buen dia para programar en PHP";
+
+// Separar en palabras
+$palabras = explode(" ", $frase);
+echo "Total palabras: " . count($palabras) . "<br>";
+
+// Reconstruir con guiones
+$fraseConGuiones = implode("-", $palabras);
+
+// Buscar coincidencia exacta
+$posicion = strpos($frase, "PHP");
+if ($posicion !== false) {
+    echo "La palabra PHP fue encontrada en la posición $posicion.";
+} else {
+    echo "No se encontró la palabra.";
+}
+?>
+
+⚠️ OJO EN EL EXAMEN:
+En strpos(), siempre debes comparar con !== false (desigualdad estricta).
+Si la palabra está al inicio, strpos() devuelve 0, lo cual PHP evalúa 
+débilmente como false si usas == false.
+
+// INCORRECTO:
+if (strpos("PHP es genial", "PHP") == false) { ... }
+
+// CORRECTO:
+if (strpos("PHP es genial", "PHP") !== false) { ... }
+
+========================================================================
