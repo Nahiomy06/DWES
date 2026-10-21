@@ -27,11 +27,7 @@ public abstract class ProductoServiceBase implements ProductoService{
     }
 
 
-    private void anadir(String nombre, double precio, int stock){
-        long id = secuencia.incrementAndGet();
-        productos.add(new Producto(id, nombre, precio, stock));
 
-    }
 
     @Override
     public List<Producto> getProductos() {
@@ -49,7 +45,7 @@ public abstract class ProductoServiceBase implements ProductoService{
         ValidarProducto(producto.getNombre(), producto.getPrecio(), producto.getStock());
         producto.setId(secuencia.incrementAndGet());
         productos.add(producto);
-        log.info("Producto {} guardado correctamente", producto.getNombre());
+            log.info("Producto {} guardado correctamente", producto.getNombre());
         return producto;
     }
 
