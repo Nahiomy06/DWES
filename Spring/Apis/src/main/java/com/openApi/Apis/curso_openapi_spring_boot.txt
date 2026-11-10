@@ -1,0 +1,575 @@
+================================================================================
+Curso de OpenAPI: documentación de APIs REST con Spring Boot
+================================================================================
+
+Vamos a preparar una clase completa para que puedas estudiar de cara a tu examen de Entornos de Desarrollo / Entornos de Servidores, centrándonos en cómo documentar una API REST utilizando OpenAPI y Swagger.
+La idea es que no te limites a memorizar anotaciones: quiero que entiendas para qué sirve cada una, cuándo utilizarla, cómo se relacionan entre sí y cómo comprobar que funciona desde tu propio ordenador mediante localhost.
+Voy a utilizar Java + Spring Boot + Maven, porque es la tecnología que has utilizado en tu proyecto de Biblioteca Decroly.
+
+--------------------------------------------------------------------------------
+1. Organización de las clases
+--------------------------------------------------------------------------------
+Dividiremos el contenido en varias clases para que puedas avanzar poco a poco.
+
+Clase 1. Fundamentos de OpenAPI
+  Qué es una API, qué es REST, qué es OpenAPI, qué es Swagger y qué relación existe entre ellos.
+
+Clase 2. Configuración del proyecto
+  Dependencias Maven, configuración de Springdoc y acceso a Swagger UI desde localhost.
+
+Clase 3. Documentación de controladores
+  @Tag, @Operation, @ApiResponse, @ApiResponses, @Parameter y @Parameters.
+
+Clase 4. Documentación de modelos y DTO
+  @Schema, @ExampleObject, @Content, propiedades, ejemplos y campos obligatorios.
+
+Clase 5. Documentación completa de endpoints
+  GET, POST, PUT, PATCH y DELETE. Parámetros, cuerpos de petición y respuestas.
+
+Clase 6. Práctica de examen
+  Documentaremos una API completa, ejecutaremos las pruebas y corregiremos errores.
+
+
+================================================================================
+CLASE 1. Fundamentos de OpenAPI
+================================================================================
+
+1. ¿Qué es una API?
+-------------------
+Una API (Application Programming Interface) es una interfaz que permite que dos aplicaciones se comuniquen entre sí.
+
+Por ejemplo, imagina que tienes una aplicación de biblioteca:
+- El frontend necesita consultar los libros.
+- El backend contiene la lógica de la aplicación.
+- La base de datos almacena los libros.
+
+El frontend no necesita acceder directamente a la base de datos. Se comunica con el backend mediante una API.
+
+Ejemplo de petición del frontend:
+  GET http://localhost:8080/api/books
+
+Respuesta del servidor (JSON):
+[
+  {
+    "id": 1,
+    "title": "El Quijote",
+    "author": "Miguel de Cervantes"
+  },
+  {
+    "id": 2,
+    "title": "La Celestina",
+    "author": "Fernando de Rojas"
+  }
+]
+
+Importante para el examen: una API permite la comunicación entre aplicaciones sin que estas tengan que conocer cómo está implementado internamente el otro sistema.
+
+2. ¿Qué es una API REST?
+------------------------
+REST (Representational State Transfer) es un estilo arquitectónico que establece una serie de principios para diseñar servicios web.
+
+En una API REST trabajamos habitualmente con:
+- Recursos: libros, usuarios, categorías, pedidos...
+- URLs: identifican los recursos.
+- Métodos HTTP: indican qué operación queremos realizar.
+- Respuestas HTTP: indican si la petición ha tenido éxito o ha fallado.
+
+Los cinco métodos que debes conocer son:
++--------+------------------------+------------------------+
+| Método | Función                | Ejemplo                |
++--------+------------------------+------------------------+
+| GET    | Consultar              | Obtener todos los libros|
+| POST   | Crear                  | Añadir un libro        |
+| PUT    | Actualizar             | Modificar un libro     |
+| PATCH  | Actualizar parcialmente | Cambiar el título      |
+| DELETE | Eliminar               | Borrar un libro        |
++--------+------------------------+------------------------+
+
+Ejemplo de endpoints para trabajar con libros:
+  GET    /api/books
+  GET    /api/books/1
+  POST   /api/books
+  PUT    /api/books/1
+  DELETE /api/books/1
+
+3. ¿Qué es OpenAPI?
+-------------------
+Aquí empieza el contenido principal del examen.
+OpenAPI es una especificación que permite describir y documentar una API REST de forma estandarizada.
+
+Es decir, permite indicar:
+- Qué endpoints existen.
+- Qué método HTTP utiliza cada endpoint.
+- Qué parámetros necesita.
+- Qué datos recibe.
+- Qué respuestas puede devolver.
+- Qué códigos HTTP utiliza.
+- Qué estructura tienen los objetos JSON.
+
+Imagina que otro programador quiere utilizar tu API de biblioteca. En lugar de tener que leer todo tu código Java para entender cómo funciona, puede consultar su documentación OpenAPI.
+
+4. ¿Qué es Swagger?
+--------------------
+Esta es una de las preguntas que más fácilmente pueden aparecer en un examen.
+OpenAPI y Swagger están relacionados, pero no son exactamente lo mismo.
+
++------------+-------------------------------------------------------------+
+| Concepto   | Significado                                                 |
++------------+-------------------------------------------------------------+
+| OpenAPI    | Especificación estándar para describir APIs REST.           |
+| Swagger    | Conjunto de herramientas relacionadas con OpenAPI.          |
+| Swagger UI | Interfaz gráfica que permite visualizar y probar una API.   |
+| Springdoc  | Librería que integra OpenAPI con Spring Boot.              |
++------------+-------------------------------------------------------------+
+
+Swagger UI permite:
+1. Visualizar todos los endpoints.
+2. Consultar los parámetros necesarios.
+3. Ver los modelos de datos.
+4. Consultar las posibles respuestas.
+5. Ejecutar peticiones directamente desde el navegador.
+
+Qué debes memorizar:
+- OpenAPI describe la API.
+- Swagger UI muestra esa documentación de forma visual y permite probarla.
+- Springdoc genera la documentación OpenAPI automáticamente a partir de tu aplicación Spring Boot y sus anotaciones.
+
+5. ¿Cómo funciona OpenAPI con Spring Boot?
+-------------------------------------------
+En Java no tienes que escribir toda la documentación manualmente. Para ello utilizamos la librería Springdoc OpenAPI.
+
+Flujo de trabajo:
+1. Código Java (Controladores, métodos, DTO y anotaciones)
+2. Springdoc OpenAPI (Analiza el código y genera la documentación)
+3. Especificación OpenAPI (Documento JSON o YAML)
+4. Swagger UI (Documentación visual y pruebas de endpoints)
+
+
+================================================================================
+CLASE 2. Configurar OpenAPI en localhost
+================================================================================
+
+1. Crear el proyecto
+--------------------
+Necesitas:
+- Java
+- Maven
+- Spring Boot
+- Spring Web
+
+Configuración en Spring Initializr:
+- Project: Maven
+- Language: Java
+- Packaging: Jar
+- Java: Versión compatible con tu Spring Boot
+- Dependencies: Spring Web
+
+2. Añadir la dependencia Springdoc
+----------------------------------
+Abre tu archivo pom.xml y añade la siguiente dependencia dentro de <dependencies>:
+
+Si utilizas Spring Boot 3.x:
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>3.1.1</version>
+    <scope>compile</scope>
+</dependency>
+
+Esta versión pertenece a la rama Springdoc 2, destinada a Spring Boot 3.
+Si tu proyecto utiliza Spring Boot 4, se debe utilizar la rama Springdoc 3.
+
+3. Crear un controlador REST
+----------------------------
+Crea la clase BookController.java:
+
+package com.example.biblioteca.controller;
+
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/books")
+public class BookController {
+
+    @GetMapping
+    public String getBooks() {
+        return "Lista de libros";
+    }
+
+    @GetMapping("/{id}")
+    public String getBookById(@PathVariable Long id) {
+        return "Libro con ID: " + id;
+    }
+
+    @PostMapping
+    public String createBook() {
+        return "Libro creado correctamente";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteBook(@PathVariable Long id) {
+        return "Libro eliminado: " + id;
+    }
+}
+
+4. Ejecutar la aplicación
+-------------------------
+Arranca Spring Boot desde tu IDE o con Maven:
+  mvn spring-boot:run
+
+Acceso desde el navegador:
+- Swagger UI:                http://localhost:8080/swagger-ui/index.html
+- Documento OpenAPI (JSON):  http://localhost:8080/v3/api-docs
+- Documento OpenAPI (YAML):  http://localhost:8080/v3/api-docs.yaml
+
+
+================================================================================
+CLASE 3. Las anotaciones de OpenAPI
+================================================================================
+
+Las anotaciones son instrucciones que añadimos al código Java para indicar cómo queremos que aparezca documentada nuestra API.
+
+Imports habituales:
+import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.annotations.tags.*;
+import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.parameters.*;
+import io.swagger.v3.oas.annotations.media.*;
+
+1. @Tag
+--------
+Sirve para agrupar y clasificar los endpoints de un controlador.
+
+Ejemplo:
+@Tag(
+    name = "Libros",
+    description = "Operaciones relacionadas con los libros"
+)
+@RestController
+@RequestMapping("/api/books")
+public class BookController { ... }
+
+Recuerda: @Tag se utiliza principalmente a nivel de clase.
+
+2. @Operation
+-------------
+Sirve para describir qué hace un endpoint concreto.
+
+Propiedades clave:
+- summary: resumen breve de la operación.
+- description: explicación más detallada.
+
+Ejemplo:
+@Operation(
+    summary = "Obtener todos los libros",
+    description = "Devuelve una lista con todos los libros registrados"
+)
+@GetMapping
+public String getBooks() {
+    return "Lista de libros";
+}
+
+3. @ApiResponse
+---------------
+Sirve para documentar las posibles respuestas que puede devolver un endpoint.
+
+Ejemplo:
+@ApiResponse(
+    responseCode = "200",
+    description = "Libros obtenidos correctamente"
+)
+
+Códigos HTTP esenciales:
+- 200: OK (Petición correcta)
+- 201: Created (Recurso creado)
+- 204: No Content (Operación correcta sin contenido)
+- 400: Bad Request (Petición incorrecta)
+- 401: Unauthorized (No autenticado)
+- 403: Forbidden (Acceso prohibido)
+- 404: Not Found (Recurso no encontrado)
+- 500: Internal Server Error (Error interno)
+
+4. @ApiResponses
+----------------
+Sirve para documentar varias respuestas posibles de un mismo endpoint agrupando varios @ApiResponse.
+
+Ejemplo:
+@ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "Libro encontrado"),
+    @ApiResponse(responseCode = "404", description = "No se ha encontrado el libro"),
+    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+})
+
+5. @Parameter
+-------------
+Sirve para documentar los parámetros que recibe un endpoint.
+
+Ejemplo:
+@GetMapping("/{id}")
+public String getBookById(
+    @Parameter(description = "Identificador del libro", example = "1")
+    @PathVariable Long id
+) {
+    return "Libro con ID: " + id;
+}
+
+Propiedades habituales: name, description, example, required.
+
+6. @Schema
+----------
+Se usa para documentar las propiedades de los DTOs y modelos.
+
+Ejemplo DTO:
+public class BookRequestDto {
+
+    @Schema(
+        description = "ISBN del libro",
+        example = "9788437604947",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
+    private String isbn;
+
+    @Schema(description = "Título del libro", example = "El Quijote")
+    private String title;
+
+    @Schema(description = "Autor del libro", example = "Miguel de Cervantes")
+    private String author;
+
+    @Schema(description = "Año de publicación", example = "1605")
+    private Integer publicationYear;
+
+    // Getters y setters
+}
+
+Propiedades de @Schema: description, example, name, requiredMode, defaultValue, allowableValues, minimum, maximum.
+
+Importante: @Schema documenta la estructura de los datos, pero no sustituye a las validaciones de Java (@NotNull, @Size, @Min).
+
+7. @Content y @ExampleObject
+---------------------------
+Permiten documentar el contenido (ej. JSON) que se envía o recibe.
+
+Ejemplo:
+@ApiResponse(
+    responseCode = "201",
+    description = "Libro creado correctamente",
+    content = @Content(
+        mediaType = "application/json",
+        schema = @Schema(implementation = BookRequestDto.class),
+        examples = @ExampleObject(
+            value = """
+                {
+                    "isbn": "9788437604947",
+                    "title": "El Quijote",
+                    "author": "Miguel de Cervantes",
+                    "publicationYear": 1605
+                }
+                """
+        )
+    )
+)
+
+8. Resumen de anotaciones
+-------------------------
++-----------------+----------------------------------------+------------------+
+| Anotación       | ¿Para qué sirve?                       | Nivel habitual   |
++-----------------+----------------------------------------+------------------+
+| @Tag            | Agrupar endpoints                      | Clase            |
+| @Operation      | Describir una operación               | Método           |
+| @ApiResponse    | Documentar una respuesta               | Método           |
+| @ApiResponses   | Documentar varias respuestas           | Método           |
+| @Parameter      | Documentar parámetros                  | Parámetro        |
+| @Schema         | Documentar modelos y atributos         | Clase / atributo |
+| @Content        | Describir el contenido de respuesta    | Respuesta        |
+| @ExampleObject  | Mostrar ejemplos JSON                  | Contenido        |
++-----------------+----------------------------------------+------------------+
+
+
+================================================================================
+CLASE 4. Ejemplo completo: documentar una API REST
+================================================================================
+
+Controlador completo documentado:
+
+package com.example.biblioteca.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.*;
+
+@Tag(name = "Libros", description = "Operaciones relacionadas con los libros")
+@RestController
+@RequestMapping("/api/books")
+public class BookController {
+
+    @Operation(
+        summary = "Obtener todos los libros",
+        description = "Devuelve todos los libros disponibles en la biblioteca"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de libros obtenida correctamente"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping
+    public String getBooks() {
+        return "Lista de libros";
+    }
+
+    @Operation(
+        summary = "Buscar un libro por ID",
+        description = "Busca un libro utilizando su identificador"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Libro encontrado"),
+        @ApiResponse(responseCode = "404", description = "Libro no encontrado")
+    })
+    @GetMapping("/{id}")
+    public String getBookById(
+        @Parameter(description = "Identificador del libro", example = "1", required = true)
+        @PathVariable Long id
+    ) {
+        return "Libro con ID: " + id;
+    }
+
+    @Operation(
+        summary = "Crear un libro",
+        description = "Registra un nuevo libro en la biblioteca"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Libro creado correctamente"),
+        @ApiResponse(responseCode = "400", description = "Los datos enviados no son válidos")
+    })
+    @PostMapping
+    public String createBook() {
+        return "Libro creado correctamente";
+    }
+
+    @Operation(
+        summary = "Eliminar un libro",
+        description = "Elimina un libro mediante su identificador"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Libro eliminado correctamente"),
+        @ApiResponse(responseCode = "404", description = "Libro no encontrado")
+    })
+    @DeleteMapping("/{id}")
+    public String deleteBook(@PathVariable Long id) {
+        return "Libro eliminado: " + id;
+    }
+}
+
+
+================================================================================
+CLASE 5. Documentación general de la API
+================================================================================
+
+Para definir información global de la API usamos @OpenAPIDefinition e @Info:
+
+package com.example.biblioteca.config;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@OpenAPIDefinition(
+    info = @Info(
+        title = "Biblioteca API",
+        version = "1.0",
+        description = "API REST para gestionar una biblioteca"
+    )
+)
+public class OpenApiConfig {
+}
+
+
+================================================================================
+CLASE 6. Práctica de examen
+================================================================================
+
+--------------------------------------------------------------------------------
+Ejercicio 1. Preguntas teóricas
+--------------------------------------------------------------------------------
+1. ¿Qué es OpenAPI?
+   [ ] Una base de datos
+   [X] Una especificación para describir APIs REST
+   [ ] Un lenguaje de programación
+
+2. ¿Qué librería utilizamos para integrar OpenAPI con Spring Boot?
+   [ ] Spring Security
+   [X] Springdoc
+   [ ] Hibernate
+
+3. ¿Qué anotación sirve para agrupar los endpoints de un controlador?
+   [X] @Tag
+   [ ] @Schema
+   [ ] @Parameter
+
+4. ¿Qué anotación describe la finalidad de un endpoint?
+   [ ] @ApiResponse
+   [X] @Operation
+   [ ] @Content
+
+5. ¿Qué anotación utilizamos para documentar los atributos de un DTO?
+   [ ] @Tag
+   [ ] @ApiResponses
+   [X] @Schema
+
+6. ¿Qué diferencia hay entre @ApiResponse y @ApiResponses?
+   [ ] Son exactamente iguales
+   [X] Una documenta una respuesta y la otra agrupa varias
+   [ ] Una sirve para GET y otra para POST
+
+7. ¿Qué URL permite consultar el JSON OpenAPI por defecto?
+   [ ] localhost:8080/swagger
+   [X] localhost:8080/v3/api-docs
+   [ ] localhost:8080/api-docs
+
+8. ¿Qué código HTTP indica que un recurso no existe?
+   [ ] 200
+   [ ] 201
+   [X] 404
+
+--------------------------------------------------------------------------------
+Ejercicio 2. Práctica de programación
+--------------------------------------------------------------------------------
+Enunciado:
+Crea un controlador CategoryController con un endpoint:
+  GET /api/categories/{id}
+
+Requisitos:
+1. Utilizar @Tag para agrupar las categorías.
+2. Utilizar @Operation para describir la búsqueda.
+3. Utilizar @Parameter para documentar el ID.
+4. Utilizar @ApiResponses para documentar:
+   - 200: categoría encontrada.
+   - 404: categoría no encontrada.
+5. Ejecutar el proyecto y comprobar que aparece correctamente en Swagger UI.
+
+
+================================================================================
+Chuleta final para el examen
+================================================================================
+
+Elemento / Anotación  | Función
+---------------------+---------------------------------------------------------
+OpenAPI              | Especificación estándar
+Swagger UI           | Interfaz visual interactiva
+Springdoc            | Integración de OpenAPI en Spring Boot
+@Tag                 | Agrupar endpoints a nivel de Clase
+@Operation           | Describir un endpoint/método
+@ApiResponse         | Documentar un código de respuesta HTTP
+@ApiResponses        | Contenedor de múltiples @ApiResponse
+@Parameter           | Documentar un parámetro recibido en la petición
+@Schema              | Documentar campos en modelos / DTOs
+@Content             | Definir el tipo de contenido (ej. application/json)
+@ExampleObject       | Proporcionar un ejemplo explícito de JSON
+@OpenAPIDefinition   | Información global del sistema
+
+URLs de verificación local:
+- http://localhost:8080/swagger-ui/index.html
+- http://localhost:8080/v3/api-docs
+- http://localhost:8080/v3/api-docs.yaml

@@ -1,0 +1,54 @@
+$kind: http-request
+url: "{{baseUrl}}/v3/api-docs"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      let doc = {};
+      try { doc = pm.response.json(); } catch (e) { }
+      const esperadas = {
+          "GET /api/categorias": [200], "GET /api/categorias/{}": [200, 404], "POST /api/categorias": [201, 400, 409],
+          "PUT /api/categorias/{}": [200, 400, 404, 409], "DELETE /api/categorias/{}": [204, 404],
+          "GET /api/libros": [200], "GET /api/libros/disponibles": [200], "GET /api/libros/{}": [200, 404],
+          "POST /api/libros": [201, 400, 409], "PUT /api/libros/{}": [200, 400, 404, 409], "DELETE /api/libros/{}": [204, 404],
+          "GET /api/biblioteca/info": [200]
+      };
+      const ops = {};
+      const rutas = [];
+      const paths = doc.paths || {};
+      for (const ruta in paths) {
+          rutas.push(ruta);
+          const r = ruta.replace(/\{[^}]*\}/g, "{}").replace(/\/$/, "");
+          for (const m in paths[ruta]) { ops[m.toUpperCase() + " " + r] = paths[ruta][m]; }
+      }
+      const faltan = [], sinTag = [], sinDesc = [], sinResp = [], incompletas = [];
+      for (const k in esperadas) {
+          const op = ops[k];
+          if (!op) { faltan.push(k); continue; }
+          const tags = op.tags || [];
+          let tagPropio = tags.length > 0;
+          for (let i = 0; i < tags.length; i++) { if (String(tags[i]).toLowerCase().indexOf("controller") >= 0) { tagPropio = false; } }
+          if (!tagPropio) { sinTag.push(k); }
+          if (!op.summary && !op.description) { sinDesc.push(k); }
+          const cods = Object.keys(op.responses || {});
+          let hayError = false;
+          for (let i = 0; i < cods.length; i++) { if (cods[i].charAt(0) === "4") { hayError = true; } }
+          if (cods.indexOf(String(esperadas[k][0])) < 0 || (esperadas[k].length > 1 && !hayError)) { sinResp.push(k + " (" + cods.join(", ") + ")"); }
+          const falta = [];
+          for (let i = 0; i < esperadas[k].length; i++) { if (cods.indexOf(String(esperadas[k][i])) < 0) { falta.push(esperadas[k][i]); } }
+          if (falta.length > 0) { incompletas.push(k + " (falta " + falta.join(", ") + ")"); }
+      }
+      pm.test("/v3/api-docs responde y documenta las rutas del enunciado", function () {
+          pm.expect(pm.response.code === 200 && faltan.length === 0, "Recibido " + pm.response.code + (faltan.length ? " · no aparecen: " + faltan.join(", ") : "")).to.be.true;
+      });
+      pm.test("Cada controlador tiene @Tag propio", function () { pm.expect(sinTag.length === 0, "Etiqueta por defecto en: " + sinTag.join(", ")).to.be.true; });
+      pm.test("Cada endpoint tiene @Operation con descripción", function () { pm.expect(sinDesc.length === 0, "Sin descripción: " + sinDesc.join(", ")).to.be.true; });
+      pm.test("Cada endpoint documenta su código de éxito y alguno de error", function () { pm.expect(sinResp.length === 0, "Revisar: " + sinResp.join("; ")).to.be.true; });
+      pm.test("Hay ejemplos en los esquemas (@Schema)", function () { pm.expect(JSON.stringify(doc.components || {}).indexOf("\"example") >= 0, "No hay ningún example").to.be.true; });
+      pm.test("Información general con título, versión y contacto", function () {
+          const info = doc.info || {};
+          pm.expect(!!info.title && info.title !== "OpenAPI definition" && !!info.version && !!info.contact, "info: " + JSON.stringify(info)).to.be.true;
+      });
+      pm.test("OpenAPI documenta todas las respuestas posibles de cada endpoint", function () { pm.expect(incompletas.length === 0, incompletas.join("; ")).to.be.true; });
+    language: text/javascript
+order: 2000

@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{baseUrl}}/api/libros?autor={{filtroAutor}}"
+method: GET
+queryParams:
+  autor: "{{filtroAutor}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      function lista() {
+          try { const j = pm.response.json(); return Array.isArray(j) ? j : null; } catch (e) { return null; }
+      }
+      function contieneId(l, id) {
+          if (!l) { return false; }
+          for (let i = 0; i < l.length; i++) { if (String(l[i].id) === String(id)) { return true; } }
+          return false;
+      }
+      pm.test("?autor= filtra por autor sin distinguir mayúsculas", function () {
+          const l = lista();
+          const f = pm.collectionVariables.get("filtroAutor").toLowerCase();
+          let todos = l !== null;
+          if (l) { for (let i = 0; i < l.length; i++) { if (String(l[i].autor).toLowerCase().indexOf(f) < 0) { todos = false; } } }
+          pm.expect(pm.response.code === 200 && todos && contieneId(l, pm.collectionVariables.get("idLibro")), "Recibido " + pm.response.code + " con " + (l ? l.length : "ningún") + " libro(s)").to.be.true;
+      });
+    language: text/javascript
+order: 11000

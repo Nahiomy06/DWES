@@ -1,0 +1,31 @@
+$kind: collection
+description: |-
+  Comprueba que tu API cumple el enunciado de la fase 1. Arranca tu aplicación y ejecuta la colección entera con el Runner, en orden. Cada test dice qué se espera; si falla, el mensaje indica qué se ha recibido.
+
+  Esta colección no sustituye a la tuya: en postman/ tienes que entregar tu propia colección.
+variables:
+  baseUrl: http://localhost:8080
+  noExiste: "999999"
+  nombreBiblioteca: Biblioteca Decroly
+  maxPrestamos: "3"
+  diasPrestamo: "15"
+  sufijo: ""
+  nombreCategoria: ""
+  nombreCategoriaMayus: ""
+  nombreCategoria2: ""
+  autor: ""
+  filtroAutor: ""
+  isbn1: ""
+  isbn2: ""
+  isbn3: ""
+  isbn4: ""
+  isbn5: ""
+  isbn6: ""
+  isbn7: ""
+  isbn8: ""
+  isbn9: ""
+  isbn10: ""
+  idCategoria: ""
+  idCategoria2: ""
+  idLibro: ""
+  idLibro2: ""

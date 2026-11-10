@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/api/libros?autor=noexiste{{sufijo}}"
+method: GET
+queryParams:
+  autor: noexiste{{sufijo}}
+scripts:
+  - type: afterResponse
+    code: |-
+      function lista() {
+          try { const j = pm.response.json(); return Array.isArray(j) ? j : null; } catch (e) { return null; }
+      }
+      function contieneId(l, id) {
+          if (!l) { return false; }
+          for (let i = 0; i < l.length; i++) { if (String(l[i].id) === String(id)) { return true; } }
+          return false;
+      }
+      pm.test("?autor= con un autor que no existe devuelve una lista vacía", function () { const l = lista(); pm.expect(pm.response.code === 200 && l !== null && l.length === 0, "Recibido " + pm.response.code + " con " + (l ? l.length : "ningún") + " libro(s)").to.be.true; });
+    language: text/javascript
+order: 12000

@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{baseUrl}}/api/categorias/{{idCategoria}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "{{nombreCategoria}} Mod",
+      "descripcion": "Modificada en la prueba"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("PUT /api/categorias/{id} responde 200", function () {
+          pm.expect(pm.response.code >= 200 && pm.response.code < 300, "Recibido " + pm.response.code + " · " + pm.response.text().substring(0, 120)).to.be.true;
+      });
+      const url = pm.collectionVariables.get("baseUrl") + "/api/categorias/" + pm.collectionVariables.get("idCategoria");
+      pm.sendRequest(url, function (err, res) {
+          pm.test("PUT /api/categorias/{id} guarda los cambios", function () {
+              let d = null;
+              try { d = res.json().descripcion; } catch (e) { }
+              pm.expect(d, "descripción tras modificar: " + d).to.eql("Modificada en la prueba");
+          });
+      });
+    language: text/javascript
+order: 9000

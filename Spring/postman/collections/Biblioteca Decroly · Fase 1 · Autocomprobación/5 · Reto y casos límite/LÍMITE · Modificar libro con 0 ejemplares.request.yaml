@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/api/libros/{{idLibro}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "isbn": "{{isbn1}}",
+      "titulo": "Libro de prueba (modificado)",
+      "autor": "{{autor}}",
+      "anioPublicacion": 1959,
+      "ejemplares": 0,
+      "categoriaId": {{idCategoria}}
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("Modificar un libro con 0 ejemplares devuelve 400", function () { pm.expect(pm.response.code, "Recibido " + pm.response.code).to.eql(400); });
+    language: text/javascript
+order: 3000

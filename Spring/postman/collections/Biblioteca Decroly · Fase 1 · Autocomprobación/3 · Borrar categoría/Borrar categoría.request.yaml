@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/api/categorias/{{idCategoria2}}"
+method: DELETE
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("DELETE /api/categorias/{id} responde 204", function () {
+          pm.expect(pm.response.code >= 200 && pm.response.code < 300, "Recibido " + pm.response.code + " · " + pm.response.text().substring(0, 120)).to.be.true;
+      });
+      pm.test("Borrar categoría devuelve 204 No Content", function () {
+          pm.expect(pm.response.code, "Recibido " + pm.response.code).to.eql(204);
+      });
+    language: text/javascript
+order: 1000

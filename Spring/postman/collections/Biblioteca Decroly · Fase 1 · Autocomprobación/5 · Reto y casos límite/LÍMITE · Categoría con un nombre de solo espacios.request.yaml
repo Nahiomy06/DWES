@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/api/categorias"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "   ",
+      "descripcion": "x"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test("Una categoría con un nombre de solo espacios devuelve 400", function () { pm.expect(pm.response.code, "Recibido " + pm.response.code).to.eql(400); });
+    language: text/javascript
+order: 5000

@@ -1,0 +1,38 @@
+$kind: http-request
+url: "{{baseUrl}}/api/categorias/{{idCategoria}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "",
+      "descripcion": "x"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Modificar con el nombre vacío: se rechaza (4xx)", function () {
+          // Un 404 o 405 inesperado significa que la ruta no existe
+          const c = pm.response.code;
+          const rutaInexistente = (c === 404 && true) || c === 405;
+          pm.expect(c >= 400 && c < 500 && !rutaInexistente, "Recibido " + c + " · " + pm.response.text().substring(0, 120)).to.be.true;
+      });
+      pm.test("Modificar con el nombre vacío: código 400", function () {
+          pm.expect(pm.response.code, "Recibido " + pm.response.code).to.be.oneOf([400]);
+      });
+      pm.test("Modificar con el nombre vacío: no es un error 500", function () {
+          pm.expect(pm.response.code, "Recibido " + pm.response.code).to.be.below(500);
+      });
+      if (pm.response.code >= 400 && pm.response.code < 500) {
+          pm.test("El error llega en formato ProblemDetail", function () {
+              const ct = pm.response.headers.get("Content-Type") || "";
+              let j = {};
+              try { j = pm.response.json(); } catch (e) { }
+              const ok = ct.indexOf("problem+json") >= 0 || (j.status !== undefined && (j.title !== undefined || j.detail !== undefined));
+              pm.expect(ok, "Content-Type: " + ct + " · cuerpo: " + pm.response.text().substring(0, 120)).to.be.true;
+          });
+      }
+    language: text/javascript
+order: 12000

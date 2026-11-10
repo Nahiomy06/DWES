@@ -2,6 +2,12 @@
 workspace:
   id: 7fbbe500-674d-4b6c-9240-781ef3e504fe
 
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/Biblioteca Decroly · Fase 1 · Autocomprobación: 2d701d80-bd5b-45a6-a827-c31fe098612b
+
 # All resources in the `postman/` folder are automatically registered in Local View.
 # Point to additional files outside the `postman/` folder to register them individually. Example:
 #localResources:

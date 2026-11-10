@@ -1,0 +1,32 @@
+$kind: http-request
+url: "{{baseUrl}}/api/libros/{{idLibro}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "isbn": "{{isbn1}}",
+      "titulo": "Libro de prueba (modificado)",
+      "autor": "{{autor}}",
+      "anioPublicacion": 1959,
+      "ejemplares": 3,
+      "categoriaId": {{idCategoria}}
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("PUT /api/libros/{id} responde 200", function () {
+          pm.expect(pm.response.code >= 200 && pm.response.code < 300, "Recibido " + pm.response.code + " · " + pm.response.text().substring(0, 120)).to.be.true;
+      });
+      const url = pm.collectionVariables.get("baseUrl") + "/api/libros/" + pm.collectionVariables.get("idLibro");
+      pm.sendRequest(url, function (err, res) {
+          pm.test("PUT /api/libros/{id} guarda los cambios", function () {
+              let t = null;
+              try { t = res.json().titulo; } catch (e) { }
+              pm.expect(t, "título tras modificar: " + t).to.eql("Libro de prueba (modificado)");
+          });
+      });
+    language: text/javascript
+order: 16000
