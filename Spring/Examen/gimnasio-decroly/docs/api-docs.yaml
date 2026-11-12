@@ -1,0 +1,243 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: Información del gimnasio
+  description: Endpoints para consultar la configuración e información general del
+    gimnasio
+- name: Actividades
+  description: "Gestión integral del catálogo de las actividades: operaciones para\
+    \ la consulta, creación, actualización y eliminación de las actividades."
+paths:
+  /api/actividades/{id}:
+    get:
+      tags:
+      - Actividades
+      summary: Obtener una actividad por ID
+      description: Busca y devuelve una actividad específico basado en su identificador
+        único.
+      operationId: getActividadById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Actividad encontrado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Actividad"
+        "404":
+          description: Actividad no encontrado
+    put:
+      tags:
+      - Actividades
+      summary: Actualizar una actividad existente
+      description: Actualiza los datos de una actividad previamente registrada utilizando
+        su ID.
+      operationId: updateActividad
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActividadPeticionDto"
+        required: true
+      responses:
+        "200":
+          description: Categoría actualizada con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Actividad"
+        "400":
+          description: Datos de entrada inválidos
+        "404":
+          description: Categoría no encontrada
+        "409":
+          description: Conflicto al actualizar
+    delete:
+      tags:
+      - Actividades
+      summary: Eliminar una actividad
+      description: Elimina una actividad del sistema utilizando su ID.
+      operationId: deleteActividad
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Actividad eliminada con éxito
+        "404":
+          description: Actividad no encontrada
+        "204":
+          description: No Content
+  /api/actividades:
+    get:
+      tags:
+      - Actividades
+      summary: Crear una actividad nueva
+      description: Valida y registra una nueva actividad en el sistema.
+      operationId: getActividades
+      parameters:
+      - name: monitor
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Actividad creado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Actividad"
+        "400":
+          description: Datos de entrada inválidos o error de validación
+        "409":
+          description: Conflicto al actualizar
+    post:
+      tags:
+      - Actividades
+      summary: Crear una actividad nueva
+      description: Valida y registra una nueva actividad en el sistema.
+      operationId: createActividad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ActividadPeticionDto"
+        required: true
+      responses:
+        "201":
+          description: Actividad creado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Actividad"
+        "400":
+          description: Datos de entrada inválidos o error de validación
+        "409":
+          description: Conflicto al crear
+  /api/gimnasio/info:
+    get:
+      tags:
+      - Información del gimnasio
+      summary: Obtener información general del gimnasio
+      description: Devuelve los datos de configuración generales como el nombre y
+        las maximas plazas.
+      operationId: getInfo
+      responses:
+        "200":
+          description: Información obtenida con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GimnasioPeticionDto"
+  /api/actividades/disponibles:
+    get:
+      tags:
+      - Actividades
+      summary: Obtener actividades con plazas disponibles
+      description: Permite obtener la lista de todas las actividades que cuentan con
+        plazas disponibles para préstamo.
+      operationId: getActividadesDisponibles
+      responses:
+        "200":
+          description: Lista de Actividades con plazas disponibles obtenida con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Actividad"
+components:
+  schemas:
+    ActividadPeticionDto:
+      type: object
+      description: Datos de petición para la creación o actualización de una actividad
+      properties:
+        nombre:
+          type: string
+          description: El nombre de la actividad
+          example: Pilates
+        monitor:
+          type: string
+          description: Nombre del monitor de la actividad
+          example: Maria Perez
+        plazas:
+          type: integer
+          format: int32
+          description: Número de plazas totales para la actividad
+          example: 15
+      required:
+      - monitor
+      - nombre
+      - plazas
+    Actividad:
+      type: object
+      description: Entidad que representa una actividad en el sistema del gimnasio
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identificador único de la actividad
+          example: 1
+          readOnly: true
+        nombre:
+          type: string
+          description: Nombre de la actividad
+          example: Pilates
+        monitor:
+          type: string
+          description: Nombre del monitor de la actividad
+          example: Laura
+        plazas:
+          type: integer
+          format: int32
+          description: Número de plazas totales para la actividad
+          example: 15
+        plazasLibres:
+          type: integer
+          format: int32
+          description: Número de plazas que se encuentran libres para la actividad
+          example: 5
+      required:
+      - monitor
+      - nombre
+      - plazas
+      - plazasLibres
+    GimnasioPeticionDto:
+      type: object
+      description: DTO que representa la información y configuración general del gimnasio
+      properties:
+        nombre:
+          type: string
+          description: Nombre oficial del gimnasio
+          example: Gimnasio  Decroly
+        maxPlazas:
+          type: integer
+          format: int32
+          description: Número de plazas maximas para una actividad
+          example: 30
+      required:
+      - maxPlazas
+      - nombre
