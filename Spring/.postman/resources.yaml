@@ -7,6 +7,7 @@ workspace:
 cloudResources:
   collections:
     ../postman/collections/Biblioteca Decroly · Fase 1 · Autocomprobación: 2d701d80-bd5b-45a6-a827-c31fe098612b
+    ../postman/collections/Corrección examen Gimnasio Decroly: 79b10c8a-4da3-42d4-9ec9-b38c258022a3
 
 # All resources in the `postman/` folder are automatically registered in Local View.
 # Point to additional files outside the `postman/` folder to register them individually. Example:

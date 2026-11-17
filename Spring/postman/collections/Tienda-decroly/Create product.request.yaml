@@ -6,7 +6,7 @@ body:
   content: |-
     {
         "nombre": "Uva",
-        "precio": 0.51,
+        "precio": 1,
         "stock": 28
     }
 order: 2571884360792096

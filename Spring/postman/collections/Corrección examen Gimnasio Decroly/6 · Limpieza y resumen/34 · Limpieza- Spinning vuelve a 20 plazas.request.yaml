@@ -1,0 +1,15 @@
+$kind: http-request
+name: "34 · Limpieza: Spinning vuelve a 20 plazas"
+url: "{{baseUrl}}/api/actividades/{{idSpinning}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "Spinning",
+      "monitor": "Marcos Ruiz",
+      "plazas": 20
+    }
+order: 1000

@@ -1,0 +1,23 @@
+$kind: collection
+description: |-
+  Colección de corrección del examen práctico Gimnasio Decroly (DWES, bloque 2).
+
+  Cómo se usa: arranca la aplicación del alumno recién compilada en IntelliJ (puerto 8080) y lanza esta colección entera con el Runner, en orden y sin retardo. Al terminar, abre la Console de Postman y copia la línea que empieza por CORRECCION en la página de corrección (o el valor actual de la variable «resultados»).
+
+  Cada test empieza por el ID de su comprobación en la página ([E04], [D05]…). Los nombres de las actividades nuevas llevan un sufijo aleatorio y la carpeta 6 deja los datos como estaban, así que puedes repetirla sin reiniciar, aunque los tests de los datos de ejemplo (E02) solo son fiables con la aplicación recién arrancada.
+variables:
+  baseUrl: http://localhost:8080
+  resultados: ""
+  rnd: ""
+  rndMay: ""
+  nombre50: ""
+  nombre51: ""
+  idPilates: ""
+  idSpinning: ""
+  idYoga: ""
+  idBody: ""
+  idNueva: ""
+  idLargo: ""
+  idMax: ""
+  maxPlazas: ""
+  maxMas1: ""

@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/api/actividades"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      const r = pm.collectionVariables.get('resultados') || '{}';
+      console.log('CORRECCION ' + r);
+      const o = JSON.parse(r); let ok = 0, ko = 0; Object.values(o).forEach(x => { ok += x[0]; ko += x[1]; });
+      pm.test('Resumen: ' + ok + ' tests bien, ' + ko + ' mal. Copia la línea CORRECCION de la Console', () => {});
+    language: text/javascript
+order: 5000

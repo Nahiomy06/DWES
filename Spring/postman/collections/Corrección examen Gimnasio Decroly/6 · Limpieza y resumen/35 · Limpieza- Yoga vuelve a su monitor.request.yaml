@@ -1,0 +1,15 @@
+$kind: http-request
+name: "35 · Limpieza: Yoga vuelve a su monitor"
+url: "{{baseUrl}}/api/actividades/{{idYoga}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "Yoga",
+      "monitor": "Laura Gómez",
+      "plazas": 15
+    }
+order: 2000

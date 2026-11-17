@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{baseUrl}}/api/gimnasio/info"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      const R = JSON.parse(pm.collectionVariables.get('resultados') || '{}');
+      const t = (n, f) => { const id = n.slice(1, 4); let ok = true, msg = ''; try { f(); } catch (e) { ok = false; msg = e && e.message ? e.message : String(e); } pm.test(n, () => { if (!ok) throw new Error(msg); }); const e = R[id] || (R[id] = [0, 0, []]); if (ok) e[0]++; else { e[1]++; if (e[2].length < 6) e[2].push(n.slice(6) + (msg ? ' → ' + msg : '')); } };
+      const cod = pm.response.code;
+      let j = null; try { j = pm.response.json(); } catch (e) { j = null; }
+      const exige = (c, m) => { if (!c) throw new Error(m); };
+      const esperado = (...cs) => exige(cs.includes(cod), 'Recibido ' + cod + ', se esperaba ' + cs.join(' o '));
+      const exito = () => exige(cod >= 200 && cod < 300, 'Recibido ' + cod + (cod === 404 ? ' (la ruta o la actividad no existe)' : ''));
+      const error4xx = () => exige(cod >= 400 && cod < 500, 'Recibido ' + cod + ', se esperaba un error 4xx');
+      const rechaza = () => exige(cod >= 400 && cod < 500 && cod !== 404 && cod !== 405, 'Recibido ' + cod + ': no se ha aplicado la regla');
+      const no500 = () => exige(cod < 500, 'Recibido ' + cod + ': un error del cliente no puede acabar en 500');
+      const problema = () => { const ct = String(pm.response.headers.get('Content-Type') || ''); exige(ct.includes('problem+json') || (j && typeof j === 'object' && !Array.isArray(j) && 'status' in j && ('title' in j || 'detail' in j)), 'La respuesta de error no es un ProblemDetail (Content-Type ' + (ct || 'vacío') + ')'); };
+      const esJson = () => exige(String(pm.response.headers.get('Content-Type') || '').includes('json') && j !== null, 'La respuesta no es JSON');
+      const lista = () => { exige(Array.isArray(j), 'La respuesta no es una lista JSON'); return j; };
+      const v = (k) => pm.collectionVariables.get(k);
+      t('[E01] GET /api/gimnasio/info responde con éxito', () => exito());
+      const valores = []; const recorre = (o) => { if (o && typeof o === 'object') Object.entries(o).forEach(([k, x]) => { if (x && typeof x === 'object') recorre(x); else valores.push([k, x]); }); }; recorre(j);
+      t('[C04] /info muestra el nombre configurado (Gimnasio Decroly)', () => exige(valores.some(([k, x]) => String(x).includes('Gimnasio Decroly')), 'No aparece «Gimnasio Decroly»: ' + pm.response.text().slice(0, 120)));
+      t('[C04] /info muestra el máximo de plazas configurado (30)', () => exige(valores.some(([k, x]) => String(x) === '30'), 'No aparece el 30 de gimnasio.max-plazas'));
+      const num = valores.filter(([k, x]) => !isNaN(Number(x)) && String(x).trim() !== '' && typeof x !== 'boolean');
+      const m = (num.find(([k]) => /max|plaza/i.test(k)) || num[0] || [null, 30])[1];
+      pm.collectionVariables.set('maxPlazas', Number(m)); pm.collectionVariables.set('maxMas1', Number(m) + 1);
+      t('[D06] /info se devuelve en JSON', () => esJson());
+      pm.collectionVariables.set('resultados', JSON.stringify(R));
+    language: text/javascript
+order: 6000

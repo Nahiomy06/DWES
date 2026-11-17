@@ -1,0 +1,5 @@
+$kind: http-request
+name: "36 · Limpieza: borrar la de 50 caracteres"
+url: "{{baseUrl}}/api/actividades/{{idLargo}}"
+method: DELETE
+order: 3000

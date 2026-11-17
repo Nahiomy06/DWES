@@ -1,0 +1,5 @@
+$kind: http-request
+name: "37 · Limpieza: borrar la de max-plazas"
+url: "{{baseUrl}}/api/actividades/{{idMax}}"
+method: DELETE
+order: 4000

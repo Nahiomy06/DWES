@@ -5,9 +5,9 @@ body:
   type: json
   content: "{\r
 
-    \    \"nombre\": \"a\",\r
+    \    \"nombre\": \"xcv\",\r
 
-    \    \"precio\": 2,\r
+    \    \"precio\": 1,\r
 
     \    \"stock\": 0\r
 

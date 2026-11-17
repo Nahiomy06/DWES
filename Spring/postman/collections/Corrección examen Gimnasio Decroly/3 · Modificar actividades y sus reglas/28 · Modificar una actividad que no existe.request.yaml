@@ -1,0 +1,37 @@
+$kind: http-request
+url: "{{baseUrl}}/api/actividades/999999"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nombre": "Fantasma {{rnd}}",
+      "monitor": "Nadie",
+      "plazas": 10
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const R = JSON.parse(pm.collectionVariables.get('resultados') || '{}');
+      const t = (n, f) => { const id = n.slice(1, 4); let ok = true, msg = ''; try { f(); } catch (e) { ok = false; msg = e && e.message ? e.message : String(e); } pm.test(n, () => { if (!ok) throw new Error(msg); }); const e = R[id] || (R[id] = [0, 0, []]); if (ok) e[0]++; else { e[1]++; if (e[2].length < 6) e[2].push(n.slice(6) + (msg ? ' → ' + msg : '')); } };
+      const cod = pm.response.code;
+      let j = null; try { j = pm.response.json(); } catch (e) { j = null; }
+      const exige = (c, m) => { if (!c) throw new Error(m); };
+      const esperado = (...cs) => exige(cs.includes(cod), 'Recibido ' + cod + ', se esperaba ' + cs.join(' o '));
+      const exito = () => exige(cod >= 200 && cod < 300, 'Recibido ' + cod + (cod === 404 ? ' (la ruta o la actividad no existe)' : ''));
+      const error4xx = () => exige(cod >= 400 && cod < 500, 'Recibido ' + cod + ', se esperaba un error 4xx');
+      const rechaza = () => exige(cod >= 400 && cod < 500 && cod !== 404 && cod !== 405, 'Recibido ' + cod + ': no se ha aplicado la regla');
+      const no500 = () => exige(cod < 500, 'Recibido ' + cod + ': un error del cliente no puede acabar en 500');
+      const problema = () => { const ct = String(pm.response.headers.get('Content-Type') || ''); exige(ct.includes('problem+json') || (j && typeof j === 'object' && !Array.isArray(j) && 'status' in j && ('title' in j || 'detail' in j)), 'La respuesta de error no es un ProblemDetail (Content-Type ' + (ct || 'vacío') + ')'); };
+      const esJson = () => exige(String(pm.response.headers.get('Content-Type') || '').includes('json') && j !== null, 'La respuesta no es JSON');
+      const lista = () => { exige(Array.isArray(j), 'La respuesta no es una lista JSON'); return j; };
+      const v = (k) => pm.collectionVariables.get(k);
+      t('[E03] Modificar una actividad que no existe da error', () => error4xx());
+      t('[D04] Modificar una que no existe: 404', () => esperado(404));
+      t('[D05] El 404 al modificar llega como ProblemDetail', () => problema());
+      t('[D03] Modificar una que no existe no da 500', () => no500());
+      pm.collectionVariables.set('resultados', JSON.stringify(R));
+    language: text/javascript
+order: 10000
