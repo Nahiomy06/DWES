@@ -1,0 +1,4 @@
+$kind: collection
+name: "2 · Productos: consultas"
+description: "GET de la colección y de un recurso. Funciona con cualquier origen de datos (memoria, json, api): toma el id de un producto real del listado."
+order: 2000

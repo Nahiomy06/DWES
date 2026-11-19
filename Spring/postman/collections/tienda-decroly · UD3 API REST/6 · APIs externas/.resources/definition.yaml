@@ -1,0 +1,3 @@
+$kind: collection
+description: Exploración directa de DummyJSON y Frankfurter, antes de consumirlas desde la tienda. Necesita conexión a Internet.
+order: 6000

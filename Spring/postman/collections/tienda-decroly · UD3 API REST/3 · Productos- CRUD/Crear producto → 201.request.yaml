@@ -1,0 +1,39 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Alfombrilla XL",
+        "precio": 12.50,
+        "stock": 60
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 201 Created", function () { pm.response.to.have.status(201); });
+      pm.test("Cabecera Location apunta al nuevo producto", function () {
+          const loc = pm.response.headers.get("Location");
+          pm.expect(loc).to.be.a("string");
+          pm.expect(loc).to.match(new RegExp("/api/productos/" + pm.response.json().id + "$"));
+      });
+      const p = pm.response.json();
+      pm.test("Devuelve el producto con los datos enviados", function () {
+          pm.expect(p.nombre).to.eql("Alfombrilla XL");
+          pm.expect(p.precio).to.eql(12.5);
+          pm.expect(p.stock).to.eql(60);
+      });
+      pm.test("El servidor asigna un id nuevo, mayor que los iniciales", function () {
+          pm.expect(p.id).to.be.a("number");
+          pm.expect(p.id).to.be.above(Number(pm.collectionVariables.get("maxIdInicial")));
+      });
+      pm.collectionVariables.set("idCreado", p.id);
+      // Location puede venir relativa o absoluta: nos quedamos con la ruta
+      let loc = pm.response.headers.get("Location") || "";
+      const i = loc.indexOf("/api/");
+      pm.collectionVariables.set("locationPath", i >= 0 ? loc.substring(i) : loc);
+    language: text/javascript
+order: 1000

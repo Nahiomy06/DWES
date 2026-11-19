@@ -1,0 +1,4 @@
+$kind: collection
+name: "3 · Productos: CRUD"
+description: POST, PUT y DELETE con los códigos 201, 200, 204 y 404. Los productos se crean en la propia ejecución, así que no dependen del origen de datos.
+order: 3000

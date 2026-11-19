@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/precio/100?iva=21"
+method: GET
+queryParams:
+  iva: "21"
+scripts:
+  - type: afterResponse
+    code: |-
+      function numeroTras(texto, etiqueta) {
+          const i = texto.indexOf(etiqueta);
+          if (i < 0) return NaN;
+          return parseFloat(texto.substring(i + etiqueta.length).trim());
+      }
+
+      pm.test("Código 200", function () { pm.response.to.have.status(200); });
+      pm.test("Con IVA: 121 EUR (si da 100, sigue la división entera)", function () {
+          const total = numeroTras(pm.response.text(), "Con IVA:");
+          pm.expect(Math.abs(total - 121)).to.be.below(0.01);
+      });
+    language: text/javascript
+order: 6000

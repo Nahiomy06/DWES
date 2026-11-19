@@ -1,0 +1,4 @@
+$kind: collection
+name: "1 · Primer proyecto: endpoints de prueba"
+description: HolaMundoRestController y PrecioRestController. Respuestas de texto, variables de ruta y parámetros de consulta.
+order: 1000

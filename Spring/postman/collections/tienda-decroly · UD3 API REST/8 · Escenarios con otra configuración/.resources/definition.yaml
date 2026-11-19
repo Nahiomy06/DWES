@@ -1,0 +1,14 @@
+$kind: collection
+description: |-
+  Peticiones que solo tienen sentido con una configuración concreta. Se omiten solas salvo que la variable 'escenario' tenga el valor indicado en cada una.
+
+  Cómo usarlas:
+  1. Cambia la propiedad en application.properties y reinicia la aplicación.
+  2. Pon el valor en la variable 'escenario' de la colección.
+  3. Ejecuta la colección completa (o solo esta carpeta y la carpeta 2, que obtiene un id válido).
+  4. Al terminar, deja la propiedad como estaba y vacía 'escenario'.
+
+  - divisas-caidas → apis.divisas-url=http://localhost:9999
+  - divisas-sin-respuesta → apis.divisas-url=http://10.255.255.1 (pon en 'timeoutSegundos' el valor de apis.timeout-segundos)
+  - problemdetails → spring.mvc.problemdetails.enabled=true
+order: 8000

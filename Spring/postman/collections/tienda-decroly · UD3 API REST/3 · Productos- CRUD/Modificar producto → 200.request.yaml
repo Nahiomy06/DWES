@@ -1,0 +1,30 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos/{{idCreado}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Alfombrilla XXL",
+        "precio": 15.00,
+        "stock": 50
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 200 y JSON", function () {
+          pm.response.to.have.status(200);
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
+      });
+
+      pm.test("Devuelve el producto modificado", function () {
+          const p = pm.response.json();
+          pm.expect(p.id).to.eql(Number(pm.collectionVariables.get("idCreado")));
+          pm.expect(p.nombre).to.eql("Alfombrilla XXL");
+          pm.expect(p.precio).to.eql(15);
+          pm.expect(p.stock).to.eql(50);
+      });
+    language: text/javascript
+order: 7000

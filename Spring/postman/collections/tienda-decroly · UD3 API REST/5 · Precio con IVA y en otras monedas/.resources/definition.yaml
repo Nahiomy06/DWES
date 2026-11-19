@@ -1,0 +1,3 @@
+$kind: collection
+description: PrecioService (IVA leído de tienda.iva), PrecioDivisaService y DivisaService (Frankfurter). Pon en la variable 'iva' el mismo valor que tienda.iva.
+order: 5000

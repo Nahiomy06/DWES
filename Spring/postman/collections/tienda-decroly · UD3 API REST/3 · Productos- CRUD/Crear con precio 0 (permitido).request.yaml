@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Pegatina de regalo",
+        "precio": 0,
+        "stock": 500
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 201: precio 0 no es negativo", function () { pm.response.to.have.status(201); });
+      pm.test("Guarda el precio 0", function () { pm.expect(pm.response.json().precio).to.eql(0); });
+      pm.collectionVariables.set("idCreado4", pm.response.json().id);
+    language: text/javascript
+order: 5000

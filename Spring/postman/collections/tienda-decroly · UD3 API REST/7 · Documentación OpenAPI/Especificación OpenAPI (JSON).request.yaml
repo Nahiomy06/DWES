@@ -1,0 +1,77 @@
+$kind: http-request
+url: "{{baseUrl}}/v3/api-docs"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 200 y JSON", function () {
+          pm.response.to.have.status(200);
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
+      });
+
+      const doc = pm.response.json();
+      pm.test("Especificación OpenAPI 3", function () {
+          pm.expect(doc.openapi).to.match(/^3\./);
+      });
+      pm.test("Información general de OpenApiConfig", function () {
+          pm.expect(doc.info.title).to.eql("API de la Tienda Decroly");
+          pm.expect(doc.info.version).to.eql("1.0");
+          pm.expect(doc.info.description).to.be.a("string");
+      });
+      pm.test("Rutas de productos con sus métodos", function () {
+          pm.expect(doc.paths).to.have.property("/api/productos");
+          pm.expect(doc.paths["/api/productos"]).to.have.property("get");
+          pm.expect(doc.paths["/api/productos"]).to.have.property("post");
+          const uno = doc.paths["/api/productos/{id}"];
+          pm.expect(uno).to.have.property("get");
+          pm.expect(uno).to.have.property("put");
+          pm.expect(uno).to.have.property("delete");
+          pm.expect(doc.paths).to.have.property("/api/productos/{id}/precio");
+      });
+      function operacionesProductos() {
+          const ops = [];
+          const rutas = ["/api/productos", "/api/productos/{id}", "/api/productos/{id}/precio"];
+          const metodos = ["get", "post", "put", "delete"];
+          for (let i = 0; i < rutas.length; i++) {
+              const r = doc.paths[rutas[i]];
+              if (!r) continue;
+              for (let j = 0; j < metodos.length; j++) {
+                  if (r[metodos[j]]) ops.push({ nombre: metodos[j].toUpperCase() + " " + rutas[i], op: r[metodos[j]] });
+              }
+          }
+          return ops;
+      }
+      pm.test("Todas las operaciones están en el grupo Productos (@Tag)", function () {
+          const ops = operacionesProductos();
+          for (let i = 0; i < ops.length; i++) {
+              pm.expect(ops[i].op.tags, ops[i].nombre).to.include("Productos");
+          }
+      });
+      pm.test("Todas las operaciones tienen summary (@Operation)", function () {
+          const ops = operacionesProductos();
+          for (let i = 0; i < ops.length; i++) {
+              pm.expect(ops[i].op.summary, ops[i].nombre).to.be.a("string");
+          }
+      });
+      pm.test("GET /api/productos/{id} documenta 200 y 404", function () {
+          const resp = doc.paths["/api/productos/{id}"].get.responses;
+          pm.expect(resp).to.have.property("200");
+          pm.expect(resp).to.have.property("404");
+      });
+      pm.test("El precio admite el parámetro de consulta moneda", function () {
+          const params = doc.paths["/api/productos/{id}/precio"].get.parameters;
+          let encontrado = false;
+          for (let i = 0; i < params.length; i++) {
+              if (params[i].name === "moneda" && params[i].in === "query") encontrado = true;
+          }
+          pm.expect(encontrado).to.eql(true);
+      });
+      pm.test("Schema Producto documentado (@Schema) con id de solo lectura", function () {
+          const s = doc.components.schemas.Producto;
+          pm.expect(s).to.be.an("object");
+          pm.expect(s.description).to.be.a("string");
+          pm.expect(s.properties.id.readOnly).to.eql(true);
+          pm.expect(s.properties.nombre.example).to.eql("Teclado mecanico");
+      });
+    language: text/javascript
+order: 1000

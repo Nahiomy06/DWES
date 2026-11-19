@@ -1,0 +1,35 @@
+$kind: http-request
+description: El servicio convierte el código a mayúsculas antes de llamar a Frankfurter.
+url: "{{baseUrl}}/api/productos/{{idPrecio}}/precio?moneda=usd"
+method: GET
+queryParams:
+  moneda: usd
+scripts:
+  - type: beforeRequest
+    code: |-
+      const esc = pm.variables.get("escenario") || "";
+      if (esc.indexOf("divisas") === 0) {
+          console.log("Omitida: el escenario " + esc + " deja el servicio de divisas sin funcionar");
+          pm.execution.skipRequest();
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test("Código 200 y JSON", function () {
+          pm.response.to.have.status(200);
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
+      });
+
+      const r = pm.response.json();
+      pm.test("Moneda USD con un tipo de cambio positivo", function () {
+          pm.expect(r.moneda).to.eql("USD");
+          pm.expect(r.tipoCambio).to.be.a("number");
+          pm.expect(r.tipoCambio).to.be.above(0);
+      });
+      pm.test("total = total en euros × tipo de cambio, redondeado", function () {
+          const eur = Number(pm.collectionVariables.get("totalEur"));
+          const esperado = Math.round(eur * r.tipoCambio * 100) / 100;
+          pm.expect(Math.abs(r.total - esperado)).to.be.below(0.011);
+      });
+    language: text/javascript
+order: 7000

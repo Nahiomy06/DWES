@@ -1,0 +1,26 @@
+$kind: http-request
+name: "ProblemDetail de Spring: cuerpo no JSON"
+url: "{{baseUrl}}/api/productos"
+method: POST
+headers:
+  Content-Type: text/plain
+body:
+  type: text
+  content: nombre=Teclado
+scripts:
+  - type: beforeRequest
+    code: |-
+      if ((pm.variables.get("escenario") || "") !== "problemdetails") {
+          console.log("Omitida: solo se ejecuta con escenario = problemdetails");
+          pm.execution.skipRequest();
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test("Código 415 en formato ProblemDetail", function () {
+          pm.response.to.have.status(415);
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/problem+json");
+          pm.expect(pm.response.json().status).to.eql(415);
+      });
+    language: text/javascript
+order: 5000

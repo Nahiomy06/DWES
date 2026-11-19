@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos/{{idCreado2}}"
+method: DELETE
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 204 No Content", function () { pm.response.to.have.status(204); });
+      pm.test("Sin cuerpo", function () { pm.expect(pm.response.text()).to.eql(""); });
+    language: text/javascript
+order: 11000

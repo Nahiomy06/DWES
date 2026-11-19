@@ -1,0 +1,21 @@
+$kind: http-request
+description: "Primero se busca el producto: el 404 llega antes de consultar la API de divisas."
+url: "{{baseUrl}}/api/productos/{{idInexistente}}/precio?moneda=USD"
+method: GET
+queryParams:
+  moneda: USD
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 404", function () {
+          pm.response.to.have.status(404);
+      });
+      pm.test("Cuerpo ProblemDetail (application/problem+json)", function () {
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/problem+json");
+          const p = pm.response.json();
+          pm.expect(p.status).to.eql(404);
+          pm.expect(p.title).to.eql("Recurso no encontrado");
+          pm.expect(p.detail).to.be.a("string");
+      });
+    language: text/javascript
+order: 11000

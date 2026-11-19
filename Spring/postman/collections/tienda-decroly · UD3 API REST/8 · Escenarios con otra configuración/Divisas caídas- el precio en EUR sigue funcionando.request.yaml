@@ -1,0 +1,20 @@
+$kind: http-request
+name: "Divisas caídas: el precio en EUR sigue funcionando"
+url: "{{baseUrl}}/api/productos/{{idExistente}}/precio"
+method: GET
+scripts:
+  - type: beforeRequest
+    code: |-
+      if ((pm.variables.get("escenario") || "") !== "divisas-caidas") {
+          console.log("Omitida: solo se ejecuta con escenario = divisas-caidas");
+          pm.execution.skipRequest();
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test("Código 200: en euros no se consulta la API de divisas", function () {
+          pm.response.to.have.status(200);
+          pm.expect(pm.response.json().moneda).to.eql("EUR");
+      });
+    language: text/javascript
+order: 2000

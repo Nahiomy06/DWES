@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos"
+method: POST
+headers:
+  Content-Type: text/plain
+body:
+  type: text
+  content: nombre=Teclado
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 415 Unsupported Media Type", function () {
+          pm.response.to.have.status(415);
+      });
+    language: text/javascript
+order: 9000

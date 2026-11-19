@@ -1,0 +1,23 @@
+$kind: http-request
+name: "Frankfurter: moneda inexistente"
+description: "DivisaService cubre los dos casos: un 4xx (HttpClientErrorException) o una respuesta sin esa tasa (tipo null). En ambos la tienda responde 400."
+url: "{{divisasUrl}}/latest?base=EUR&symbols=XYZ"
+method: GET
+queryParams:
+  base: EUR
+  symbols: XYZ
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Responde con un error 4xx o sin la tasa XYZ", function () {
+          const c = pm.response.code;
+          if (c >= 400 && c < 500) {
+              pm.expect(c).to.be.within(400, 499);
+          } else {
+              pm.expect(c).to.eql(200);
+              const r = pm.response.json();
+              pm.expect(r.rates === undefined || r.rates.XYZ === undefined).to.eql(true);
+          }
+      });
+    language: text/javascript
+order: 3000

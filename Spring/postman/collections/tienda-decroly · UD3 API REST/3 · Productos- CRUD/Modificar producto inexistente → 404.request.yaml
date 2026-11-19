@@ -1,0 +1,33 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos/{{idInexistente}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "No existe",
+        "precio": 1,
+        "stock": 1
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 404", function () {
+          pm.response.to.have.status(404);
+      });
+      pm.test("Cuerpo ProblemDetail (application/problem+json)", function () {
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/problem+json");
+          const p = pm.response.json();
+          pm.expect(p.status).to.eql(404);
+          pm.expect(p.title).to.eql("Recurso no encontrado");
+          pm.expect(p.detail).to.be.a("string");
+      });
+
+
+      pm.test("detail explica el error", function () {
+          pm.expect(pm.response.json().detail).to.eql("No existe el producto " + pm.variables.get("idInexistente"));
+      });
+    language: text/javascript
+order: 10000

@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Producto prueba precios",
+        "precio": 100,
+        "stock": 1
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 201", function () { pm.response.to.have.status(201); });
+      pm.collectionVariables.set("idPrecio", pm.response.json().id);
+    language: text/javascript
+order: 1000

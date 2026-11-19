@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos"
+method: GET
+headers:
+  Accept: application/xml
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 406 Not Acceptable: la API no sabe producir XML", function () {
+          pm.response.to.have.status(406);
+      });
+    language: text/javascript
+order: 5000

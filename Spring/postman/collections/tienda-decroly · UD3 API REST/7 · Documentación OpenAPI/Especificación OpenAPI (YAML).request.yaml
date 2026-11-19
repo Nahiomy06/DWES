@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/v3/api-docs.yaml"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 200", function () { pm.response.to.have.status(200); });
+      pm.test("Es YAML con la cabecera openapi", function () {
+          pm.expect(pm.response.text()).to.match(/^openapi: /m);
+          pm.expect(pm.response.text()).to.include("API de la Tienda Decroly");
+      });
+    language: text/javascript
+order: 2000

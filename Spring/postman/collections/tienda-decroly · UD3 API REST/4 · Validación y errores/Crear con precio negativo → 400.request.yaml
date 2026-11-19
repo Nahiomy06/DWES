@@ -1,0 +1,32 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Producto erroneo",
+        "precio": -5,
+        "stock": 1
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 400", function () {
+          pm.response.to.have.status(400);
+      });
+      pm.test("Cuerpo ProblemDetail (application/problem+json)", function () {
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/problem+json");
+          const p = pm.response.json();
+          pm.expect(p.status).to.eql(400);
+          pm.expect(p.title).to.eql("Peticion incorrecta");
+          pm.expect(p.detail).to.be.a("string");
+      });
+
+      pm.test("detail indica que el precio es negativo", function () {
+          pm.expect(pm.response.json().detail).to.include("Precio negativo");
+      });
+    language: text/javascript
+order: 4000

@@ -1,0 +1,3 @@
+$kind: collection
+description: "springdoc-openapi: especificación en JSON y YAML, Swagger UI y anotaciones @Tag, @Operation, @ApiResponse, @Parameter y @Schema."
+order: 7000

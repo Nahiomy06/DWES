@@ -1,0 +1,33 @@
+$kind: collection
+description: |-
+  Colección de comprobación de tienda-decroly al terminar la UD3 (API REST con capa de servicios, configuración, APIs externas y documentación).
+
+  Antes de ejecutar:
+  1. Arranca la aplicación (con conexión a Internet: precios en divisas y origen api).
+  2. Revisa las variables de la colección:
+     - baseUrl: http://localhost:8080 (si usas el entorno local, manda el del entorno)
+     - origen: el valor de tienda.productos.origen (memoria, json o api). Déjala vacía con jpa o cuando ya no exista la propiedad: con MySQL los datos se conservan entre arranques.
+     - iva: el valor de tienda.iva (21 por defecto).
+     - escenario: vacío para la ejecución normal (ver carpeta 8).
+  3. Ejecuta la colección completa con Run collection, en orden. Las peticiones encadenan variables (idExistente, idCreado…).
+
+  Para repetir la ejecución, reinicia la aplicación: los datos viven en memoria.
+variables:
+  baseUrl: http://localhost:8080
+  origen: memoria
+  iva: "21"
+  escenario: ""
+  timeoutSegundos: "3"
+  idInexistente: "99999"
+  catalogoUrl: https://dummyjson.com
+  divisasUrl: https://api.frankfurter.dev/v1
+  idExistente: ""
+  precioExistente: ""
+  maxIdInicial: ""
+  idCreado: ""
+  idCreado2: ""
+  idCreado3: ""
+  idCreado4: ""
+  locationPath: ""
+  idPrecio: ""
+  totalEur: ""

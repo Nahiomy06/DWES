@@ -1,0 +1,3 @@
+$kind: collection
+description: Borra los productos creados durante la ejecución. Aun así, para repetir la comprobación de los datos iniciales hay que reiniciar la aplicación, porque los ids no se reutilizan.
+order: 9000

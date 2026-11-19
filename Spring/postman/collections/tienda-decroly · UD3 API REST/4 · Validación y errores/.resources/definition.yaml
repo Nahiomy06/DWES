@@ -1,0 +1,3 @@
+$kind: collection
+description: Reglas de negocio de la capa de servicios (nombre obligatorio, precio no negativo), manejador global con ProblemDetail y errores que genera el propio Spring.
+order: 4000

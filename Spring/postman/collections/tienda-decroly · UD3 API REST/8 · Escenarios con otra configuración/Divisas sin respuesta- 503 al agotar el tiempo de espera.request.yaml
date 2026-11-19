@@ -1,0 +1,35 @@
+$kind: http-request
+name: "Divisas sin respuesta: 503 al agotar el tiempo de espera"
+url: "{{baseUrl}}/api/productos/{{idExistente}}/precio?moneda=USD"
+method: GET
+queryParams:
+  moneda: USD
+scripts:
+  - type: beforeRequest
+    code: |-
+      if ((pm.variables.get("escenario") || "") !== "divisas-sin-respuesta") {
+          console.log("Omitida: solo se ejecuta con escenario = divisas-sin-respuesta");
+          pm.execution.skipRequest();
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test("Código 503", function () {
+          pm.response.to.have.status(503);
+      });
+      pm.test("Cuerpo ProblemDetail (application/problem+json)", function () {
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/problem+json");
+          const p = pm.response.json();
+          pm.expect(p.status).to.eql(503);
+          pm.expect(p.title).to.eql("Servicio externo no disponible");
+          pm.expect(p.detail).to.be.a("string");
+      });
+
+
+      pm.test("Tarda aproximadamente apis.timeout-segundos", function () {
+          const ms = Number(pm.variables.get("timeoutSegundos")) * 1000;
+          pm.expect(pm.response.responseTime).to.be.at.least(ms - 500);
+          pm.expect(pm.response.responseTime).to.be.below(ms * 2 + 2000);
+      });
+    language: text/javascript
+order: 3000

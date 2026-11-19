@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "nombre": "Alfombrilla XL",
+        "precio": 12.50,
+        "stock": 60
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 201", function () { pm.response.to.have.status(201); });
+      pm.test("Crea otro recurso con un id distinto y mayor", function () {
+          const id = pm.response.json().id;
+          pm.expect(id).to.be.above(Number(pm.collectionVariables.get("idCreado")));
+          pm.collectionVariables.set("idCreado2", id);
+      });
+    language: text/javascript
+order: 3000

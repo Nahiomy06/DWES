@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "id": 999,
+        "nombre": "Cable HDMI",
+        "precio": 7.99,
+        "stock": 100
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 201", function () { pm.response.to.have.status(201); });
+      pm.test("El id lo decide el servidor, no el cuerpo", function () {
+          pm.expect(pm.response.json().id).to.not.eql(999);
+          pm.collectionVariables.set("idCreado3", pm.response.json().id);
+      });
+    language: text/javascript
+order: 4000

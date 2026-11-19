@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/buscar?texto=teclado"
+method: GET
+queryParams:
+  texto: teclado
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 200", function () { pm.response.to.have.status(200); });
+      pm.test("Incluye el texto buscado", function () {
+          pm.expect(pm.response.text()).to.include("teclado");
+      });
+    language: text/javascript
+order: 5000

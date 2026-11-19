@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/api/productos/{{idCreado}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Código 200 y JSON", function () {
+          pm.response.to.have.status(200);
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
+      });
+
+      pm.test("El producto conserva los datos anteriores", function () {
+          const p = pm.response.json();
+          pm.expect(p.nombre).to.eql("Alfombrilla XXL");
+          pm.expect(p.precio).to.eql(15);
+      });
+    language: text/javascript
+order: 7000
